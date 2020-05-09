@@ -1,4 +1,4 @@
-/* $NetBSD: syscalls.c,v 1.315 2020/01/21 02:38:25 pgoyette Exp $ */
+/* $NetBSD$ */
 
 /*
  * System call names.
@@ -8,7 +8,7 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: syscalls.c,v 1.315 2020/01/21 02:38:25 pgoyette Exp $");
+__KERNEL_RCSID(0, "$NetBSD$");
 
 #if defined(_KERNEL_OPT)
 #ifdef _KERNEL_OPT
@@ -222,7 +222,7 @@ const char *const syscallnames[] = {
 #else
 	/* 176 */	"#176 (excluded ntp_adjtime)",
 #endif
-	/* 177 */	"#177 (unimplemented)",
+	/* 177 */	"zone",
 	/* 178 */	"#178 (unimplemented)",
 	/* 179 */	"#179 (unimplemented)",
 	/* 180 */	"#180 (unimplemented)",
@@ -759,7 +759,7 @@ const char *const altsyscallnames[] = {
 #else
 	/* 176 */	NULL, /* excluded ntp_adjtime */
 #endif
-	/* 177 */	NULL, /* unimplemented */
+	/* 177 */	NULL, /* zone */
 	/* 178 */	NULL, /* unimplemented */
 	/* 179 */	NULL, /* unimplemented */
 	/* 180 */	NULL, /* unimplemented */

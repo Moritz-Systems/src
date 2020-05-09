@@ -1,4 +1,4 @@
-/* $NetBSD: init_sysent.c,v 1.327 2020/01/21 02:38:25 pgoyette Exp $ */
+/* $NetBSD$ */
 
 /*
  * System call switch table.
@@ -8,7 +8,7 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: init_sysent.c,v 1.327 2020/01/21 02:38:25 pgoyette Exp $");
+__KERNEL_RCSID(0, "$NetBSD$");
 
 #ifdef _KERNEL_OPT
 #include "opt_modular.h"
@@ -925,8 +925,10 @@ struct sysent sysent[] = {
 	},		/* 176 = filler */
 #endif
 	{
-		.sy_call = sys_nosys,
-	},		/* 177 = filler */
+		ns(struct sys_zone_args),
+		.sy_flags = SYCALL_ARG_PTR,
+		.sy_call = (sy_call_t *)sys_zone
+	},		/* 177 = zone */
 	{
 		.sy_call = sys_nosys,
 	},		/* 178 = filler */

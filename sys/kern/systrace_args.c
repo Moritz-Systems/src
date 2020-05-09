@@ -1,4 +1,4 @@
-/* $NetBSD: systrace_args.c,v 1.34 2020/01/21 02:38:25 pgoyette Exp $ */
+/* $NetBSD$ */
 
 /*
  * System call argument to DTrace register array converstion.
@@ -1272,6 +1272,17 @@ systrace_args(register_t sysnum, const void *params, uintptr_t *uarg, size_t *n_
 	}
 #else
 #endif
+	/* sys_zone */
+	case 177: {
+		const struct sys_zone_args *p = params;
+		iarg[0] = SCARG(p, cmd); /* int */
+		uarg[1] = (intptr_t) SCARG(p, arg1); /* void * */
+		uarg[2] = (intptr_t) SCARG(p, arg2); /* void * */
+		uarg[3] = (intptr_t) SCARG(p, arg3); /* void * */
+		uarg[4] = (intptr_t) SCARG(p, arg4); /* void * */
+		*n_args = 5;
+		break;
+	}
 	/* sys_setgid */
 	case 181: {
 		const struct sys_setgid_args *p = params;
@@ -5755,6 +5766,28 @@ systrace_entry_setargdesc(int sysnum, int ndx, char *desc, size_t descsz)
 		break;
 #else
 #endif
+	/* sys_zone */
+	case 177:
+		switch(ndx) {
+		case 0:
+			p = "int";
+			break;
+		case 1:
+			p = "void *";
+			break;
+		case 2:
+			p = "void *";
+			break;
+		case 3:
+			p = "void *";
+			break;
+		case 4:
+			p = "void *";
+			break;
+		default:
+			break;
+		};
+		break;
 	/* sys_setgid */
 	case 181:
 		switch(ndx) {
@@ -10718,6 +10751,11 @@ systrace_return_setargdesc(int sysnum, int ndx, char *desc, size_t descsz)
 		break;
 #else
 #endif
+	/* sys_zone */
+	case 177:
+		if (ndx == 0 || ndx == 1)
+			p = "int";
+		break;
 	/* sys_setgid */
 	case 181:
 		if (ndx == 0 || ndx == 1)

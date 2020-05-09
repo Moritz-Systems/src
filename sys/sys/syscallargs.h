@@ -1,4 +1,4 @@
-/* $NetBSD: syscallargs.h,v 1.293 2020/01/21 02:38:26 pgoyette Exp $ */
+/* $NetBSD$ */
 
 /*
  * System call argument lists.
@@ -1086,6 +1086,17 @@ check_syscall_args(sys_ntp_adjtime)
 #endif /* !RUMP_CLIENT */
 #else
 #endif
+
+#ifndef RUMP_CLIENT
+struct sys_zone_args {
+	syscallarg(int) cmd;
+	syscallarg(void *) arg1;
+	syscallarg(void *) arg2;
+	syscallarg(void *) arg3;
+	syscallarg(void *) arg4;
+};
+check_syscall_args(sys_zone)
+#endif /* !RUMP_CLIENT */
 
 struct sys_setgid_args {
 	syscallarg(gid_t) gid;
@@ -3500,6 +3511,8 @@ int	sys_ntp_adjtime(struct lwp *, const struct sys_ntp_adjtime_args *, register_
 
 #else
 #endif
+int	sys_zone(struct lwp *, const struct sys_zone_args *, register_t *);
+
 int	sys_setgid(struct lwp *, const struct sys_setgid_args *, register_t *);
 
 int	sys_setegid(struct lwp *, const struct sys_setegid_args *, register_t *);

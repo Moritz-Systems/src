@@ -1,4 +1,4 @@
-/* $NetBSD: syscall.h,v 1.309 2020/01/21 02:38:26 pgoyette Exp $ */
+/* $NetBSD$ */
 
 /*
  * System call numbers.
@@ -501,6 +501,9 @@
 #else
 				/* 176 is excluded ntp_adjtime */
 #endif
+/* syscall: "zone" ret: "int" args: "int" "void *" "void *" "void *" "void *" */
+#define	SYS_zone	177
+
 /* syscall: "setgid" ret: "int" args: "gid_t" */
 #define	SYS_setgid	181
 
