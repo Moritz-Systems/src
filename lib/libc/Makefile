@@ -101,6 +101,7 @@ CPPFLAGS+=	-D__BUILD_LEGACY
 .if (${MKYP} != "no")
 .include "${.CURDIR}/yp/Makefile.inc"
 .endif
+.include "${.CURDIR}/zone/Makefile.inc"
 
 # Remove from SRCS the .c files for any .S files added by the MD makefiles,
 # also remove from SRCS the .c files for the .S and .c files in NO_SRCS.
