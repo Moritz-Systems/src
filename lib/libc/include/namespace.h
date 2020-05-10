@@ -916,6 +916,7 @@
 #define yperr_string		_yperr_string
 #define ypprot_err		_ypprot_err
 #define yp_setbindtries		_yp_setbindtries
+#define zone			_zone
 #define dl_iterate_phdr		__dl_iterate_phdr
 #define dlopen			__dlopen
 #define dlclose			__dlclose
