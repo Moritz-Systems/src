@@ -175,7 +175,8 @@ WEAKASM= accept.S __aio_suspend50.S close.S connect.S execve.S \
 	readv.S _sched_setparam.S _sched_getparam.S _sched_setaffinity.S \
 	_sched_getaffinity.S sched_yield.S _sched_protect.S \
 	__select50.S setcontext.S __sigprocmask14.S __sigsuspend14.S sysarch.S \
-	__wait450.S wait6.S write.S writev.S
+	__wait450.S wait6.S write.S writev.S \
+	zone.S
 
 NOERR=	getegid.S geteuid.S getgid.S getpid.S getppid.S getuid.S \
 	issetugid.S posix_spawn.S sync.S __posix_fadvise50.S
