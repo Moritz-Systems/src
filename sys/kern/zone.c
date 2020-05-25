@@ -15,35 +15,33 @@ do_zone(int cmd, void *arg1, void *arg2, void *arg3, void *arg4)
 				return (set_errno(EFAULT));
 			}
 		} else {
-#if 0
-#ifdef _SYSCALL32_IMPL
-			zone_def32 zs32;
-
-			if (copyin(arg1, &zs32, sizeof (zone_def32))) {
-				return (set_errno(EFAULT));
-			}
-			zs.zone_name =
-			    (const char *)(unsigned long)zs32.zone_name;
-			zs.zone_root =
-			    (const char *)(unsigned long)zs32.zone_root;
-			zs.zone_privs =
-			    (const struct priv_set *)
-			    (unsigned long)zs32.zone_privs;
-			zs.zone_privssz = zs32.zone_privssz;
-			zs.rctlbuf = (caddr_t)(unsigned long)zs32.rctlbuf;
-			zs.rctlbufsz = zs32.rctlbufsz;
-			zs.zfsbuf = (caddr_t)(unsigned long)zs32.zfsbuf;
-			zs.zfsbufsz = zs32.zfsbufsz;
-			zs.extended_error =
-			    (int *)(unsigned long)zs32.extended_error;
-			zs.match = zs32.match;
-			zs.doi = zs32.doi;
-			zs.label = (const bslabel_t *)(uintptr_t)zs32.label;
-			zs.flags = zs32.flags;
-#else
-			panic("get_udatamodel() returned bogus result\n");
-#endif
-#endif
+//#ifdef _SYSCALL32_IMPL
+//			zone_def32 zs32;
+//
+//			if (copyin(arg1, &zs32, sizeof (zone_def32))) {
+//				return (set_errno(EFAULT));
+//			}
+//			zs.zone_name =
+//			    (const char *)(unsigned long)zs32.zone_name;
+//			zs.zone_root =
+//			    (const char *)(unsigned long)zs32.zone_root;
+//			zs.zone_privs =
+//			    (const struct priv_set *)
+//			    (unsigned long)zs32.zone_privs;
+//			zs.zone_privssz = zs32.zone_privssz;
+//			zs.rctlbuf = (caddr_t)(unsigned long)zs32.rctlbuf;
+//			zs.rctlbufsz = zs32.rctlbufsz;
+//			zs.zfsbuf = (caddr_t)(unsigned long)zs32.zfsbuf;
+//			zs.zfsbufsz = zs32.zfsbufsz;
+//			zs.extended_error =
+//			    (int *)(unsigned long)zs32.extended_error;
+//			zs.match = zs32.match;
+//			zs.doi = zs32.doi;
+//			zs.label = (const bslabel_t *)(uintptr_t)zs32.label;
+//			zs.flags = zs32.flags;
+//#else
+//			panic("get_udatamodel() returned bogus result\n");
+//#endif
 		}
 
 		return (zone_create(zs.zone_name, zs.zone_root,
