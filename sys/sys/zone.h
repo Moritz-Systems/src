@@ -3,6 +3,8 @@
 
 #include <sys/cdefs.h>
 
+#include <sys/param.h>
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
