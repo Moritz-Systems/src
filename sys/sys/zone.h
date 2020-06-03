@@ -193,6 +193,7 @@ typedef struct zone_cmd_arg {
 	zone_cmd_t	cmd;		/* requested action */
 	uint32_t	_pad;		/* need consistent 32/64 bit alignmt */
 	char locale[MAXPATHLEN];	/* locale in which to render messages */
+#define	BOOTARGS_MAX	256
 	char bootbuf[BOOTARGS_MAX];	/* arguments passed to zone_boot() */
 } zone_cmd_arg_t;
 

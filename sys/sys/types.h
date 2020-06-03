@@ -167,6 +167,7 @@ typedef	uint64_t	ino_t;		/* inode number */
 typedef	long		key_t;		/* IPC key (for Sys V IPC) */
 
 typedef id_t		zoneid_t;
+typedef uint32_t	datalink_id_t;
 
 #ifndef	mode_t
 typedef	__mode_t	mode_t;		/* permissions */
