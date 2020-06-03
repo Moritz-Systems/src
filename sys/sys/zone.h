@@ -142,8 +142,8 @@ typedef struct {
 	const char *zfsbuf;
 	size_t zfsbufsz;
 	int match;			/* match level */
-	uint32_t doi;			/* DOI for label */
-	const bslabel_t *label;		/* label associated with zone */
+//	uint32_t doi;			/* DOI for label */
+//	const bslabel_t *label;		/* label associated with zone */
 	int flags;
 } zone_def;
 
