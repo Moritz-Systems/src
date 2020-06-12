@@ -322,6 +322,7 @@ typedef struct zone_dataset {
 	list_node_t	zd_linkage;
 } zone_dataset_t;
 
+#if 0
 /*
  * structure for zone kstats
  */
@@ -358,6 +359,7 @@ typedef struct {
 	kstat_named_t	zm_init_pid;
 	kstat_named_t	zm_boot_time;
 } zone_misc_kstat_t;
+#endif
 
 typedef struct zone {
 	/*
