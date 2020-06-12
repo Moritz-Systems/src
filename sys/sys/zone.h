@@ -5,6 +5,8 @@
 
 #include <sys/param.h>
 
+#include <sys/list.h>
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
