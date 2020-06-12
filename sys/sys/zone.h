@@ -428,19 +428,24 @@ typedef struct zone {
 	kmutex_t	zone_nlwps_lock; /* protects zone_nlwps, and *_nlwps */
 					/* counters in projects and tasks */
 					/* that are within the zone */
+#if 0
 	rctl_qty_t	zone_nlwps;	/* number of lwps in zone */
 	rctl_qty_t	zone_nlwps_ctl; /* protected by zone_rctls->rcs_lock */
 	rctl_qty_t	zone_shmmax;	/* System V shared memory usage */
 	ipc_rqty_t	zone_ipc;	/* System V IPC id resource usage */
+#endif
 
 	uint_t		zone_rootpathlen; /* strlen(zone_rootpath) + 1 */
 	uint32_t	zone_shares;	/* FSS shares allocated to zone */
+#if 0
 	rctl_set_t	*zone_rctls;	/* zone-wide (zone.*) rctls */
+#endif
 	kmutex_t	zone_mem_lock;	/* protects zone_locked_mem and */
 					/* kpd_locked_mem for all */
 					/* projects in zone. */
 					/* Also protects zone_max_swap */
 					/* grab after p_lock, before rcs_lock */
+#if 0
 	rctl_qty_t	zone_locked_mem;	/* bytes of locked memory in */
 						/* zone */
 	rctl_qty_t	zone_locked_mem_ctl;	/* Current locked memory */
@@ -455,6 +460,7 @@ typedef struct zone {
 	rctl_qty_t	zone_max_lofi_ctl;	/* current lofi limit. */
 						/* Protected by */
 						/* zone_rctls->rcs_lock */
+#endif
 	list_t		zone_zsd;	/* list of Zone-Specific Data values */
 	kcondvar_t	zone_cv;	/* used to signal state changes */
 	struct proc	*zone_zsched;	/* Dummy kernel "zsched" process */
@@ -466,7 +472,7 @@ typedef struct zone {
 	/*
 	 * zone_kthreads is protected by zone_status_lock.
 	 */
-	kthread_t	*zone_kthreads;	/* kernel threads in zone */
+	struct lwp	*zone_kthreads;	/* kernel threads in zone */
 	struct priv_set	*zone_privset;	/* limit set for zone */
 	/*
 	 * zone_vfslist is protected by vfs_list_lock().
