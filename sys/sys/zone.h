@@ -5,7 +5,10 @@
 
 #include <sys/param.h>
 
+#include <sys/mutex.h>
+#include <sys/rwlock.h>
 #include <sys/list.h>
+#include <sys/resource.h>
 
 #ifdef	__cplusplus
 extern "C" {
@@ -17,6 +20,12 @@ typedef unsigned char   uchar_t;
 typedef unsigned short  ushort_t;
 typedef unsigned int    uint_t;
 typedef unsigned long   ulong_t;
+typedef unsigned long   ulong_t;
+
+#ifndef __defined_hr_t
+#define __defined_hr_t
+typedef longlong_t	hrtime_t;
+#endif
 
 /*
  * NOTE
@@ -501,22 +510,28 @@ typedef struct zone {
 	 */
 	list_t		zone_datasets;	/* list of datasets */
 
+#if 0
 	ts_label_t	*zone_slabel;	/* zone sensitivity label */
 	int		zone_match;	/* require label match for packets */
 	tsol_mlp_list_t zone_mlps;	/* MLPs on zone-private addresses */
+#endif
 
 	boolean_t	zone_restart_init;	/* Restart init if it dies? */
 	struct brand	*zone_brand;		/* zone's brand */
 	void		*zone_brand_data;	/* store brand specific data */
 	id_t		zone_defaultcid;	/* dflt scheduling class id */
+#if 0
 	kstat_t		*zone_swapresv_kstat;
 	kstat_t		*zone_lockedmem_kstat;
+#endif
+#if todo
 	/*
 	 * zone_dl_list is protected by zone_lock
 	 */
 	list_t		zone_dl_list;
 	netstack_t	*zone_netstack;
 	struct cpucap	*zone_cpucap;	/* CPU caps data */
+#endif
 	/*
 	 * Solaris Auditing per-zone audit context
 	 */
@@ -530,6 +545,7 @@ typedef struct zone {
 	struct klpd_reg		*zone_pfexecd;
 
 	char		*zone_fs_allowed;
+#if 0
 	rctl_qty_t	zone_nprocs;	/* number of processes in the zone */
 	rctl_qty_t	zone_nprocs_ctl;	/* current limit protected by */
 						/* zone_rctls->rcs_lock */
@@ -545,15 +561,20 @@ typedef struct zone {
 	uint64_t	zone_anon_alloc_fail;	/* cnt of anon alloc fails */
 
 	psecflags_t	zone_secflags; /* default zone security-flags */
+#endif
 
 	/*
 	 * Misc. kstats and counters for zone cpu-usage aggregation.
 	 */
 	kmutex_t	zone_misc_lock;		/* protects misc statistics */
+#if 0
 	kstat_t		*zone_misc_ksp;
+
 	zone_misc_kstat_t *zone_misc_stats;
+
 	/* Accumulated microstate for all threads in this zone. */
 	cpu_uarray_t	*zone_ustate;
+#endif
 	/* fork-fail kstat tracking */
 	uint32_t	zone_ffcap;		/* hit an rctl cap */
 	uint32_t	zone_ffnoproc;		/* get proc/lwp error */
@@ -562,7 +583,7 @@ typedef struct zone {
 
 	uint32_t	zone_nested_intp;	/* nested interp. kstat */
 
-	struct loadavg_s zone_loadavg;		/* loadavg for this zone */
+	struct loadavg zone_loadavg;		/* loadavg for this zone */
 	uint64_t	zone_hp_avenrun[3];	/* high-precision avenrun */
 	int		zone_avenrun[3];	/* FSCALED avg. run queue len */
 
@@ -595,8 +616,10 @@ typedef struct zone {
 extern zone_t zone0;
 extern zone_t *global_zone;
 extern uint_t maxzones;
+#if 0
 extern rctl_hndl_t rc_zone_nlwps;
 extern rctl_hndl_t rc_zone_nprocs;
+#endif
 
 extern int zone(int, void *, void *, void *, void *);
 
@@ -612,7 +635,9 @@ extern void zone_cred_rele(zone_t *);
 extern void zone_task_hold(zone_t *);
 extern void zone_task_rele(zone_t *);
 extern zone_t *zone_find_by_id(zoneid_t);
+#if 0
 extern zone_t *zone_find_by_label(const ts_label_t *);
+#endif
 extern zone_t *zone_find_by_name(char *);
 extern zone_t *zone_find_by_any_path(const char *, boolean_t);
 extern zone_t *zone_find_by_path(const char *);
@@ -620,7 +645,7 @@ extern zoneid_t getzoneid(void);
 extern zone_t *zone_find_by_id_nolock(zoneid_t);
 extern int zone_datalink_walk(zoneid_t, int (*)(datalink_id_t, void *), void *);
 extern int zone_check_datalink(zoneid_t *, datalink_id_t);
-extern void zone_loadavg_update();
+extern void zone_loadavg_update(void);
 
 /*
  * Zone-specific data (ZSD) APIs
@@ -757,7 +782,7 @@ struct zsd_entry {
  * Zone-safe version of thread_create() to be used when the caller wants to
  * create a kernel thread to run within the current zone's context.
  */
-extern kthread_t *zthread_create(caddr_t, size_t, void (*)(), void *, size_t,
+extern struct lwp *zthread_create(caddr_t, size_t, void (*)(), void *, size_t,
     pri_t);
 extern void zthread_exit(void);
 
@@ -821,7 +846,9 @@ extern int zone_dataset_visible(const char *, int *);
 /*
  * zone version of kadmin()
  */
+#if 0
 extern int zone_kadmin(int, int, const char *, cred_t *);
+#endif
 extern void zone_shutdown_global(void);
 
 extern void mount_in_progress(zone_t *);
