@@ -4,6 +4,9 @@
 #include <sys/cdefs.h>
 
 #include <sys/param.h>
+#include <sys/types.h>
+#include <sys/lwp.h>
+#include <sys/proc.h>
 
 #include <sys/mutex.h>
 #include <sys/rwlock.h>
@@ -21,6 +24,8 @@ typedef unsigned short  ushort_t;
 typedef unsigned int    uint_t;
 typedef unsigned long   ulong_t;
 typedef unsigned long   ulong_t;
+
+typedef void *       caddr_t;
 
 #ifndef __defined_hr_t
 #define __defined_hr_t
@@ -782,7 +787,7 @@ struct zsd_entry {
  * Zone-safe version of thread_create() to be used when the caller wants to
  * create a kernel thread to run within the current zone's context.
  */
-extern struct lwp *zthread_create(caddr_t, size_t, void (*)(), void *, size_t,
+extern struct lwp *zthread_create(caddr_t, size_t, void (*)(void), void *, size_t,
     pri_t);
 extern void zthread_exit(void);
 
@@ -856,9 +861,11 @@ extern void mount_completed(zone_t *);
 
 extern int zone_walk(int (*)(zone_t *, void *), void *);
 
+#if 0
 extern rctl_hndl_t rc_zone_locked_mem;
 extern rctl_hndl_t rc_zone_max_swap;
 extern rctl_hndl_t rc_zone_max_lofi;
+#endif
 
 #endif	/* _KERNEL */
 
