@@ -2,6 +2,8 @@
 #include <sys/zone.h>
 #include <sys/syscallargs.h>
 
+#define set_errno(x) (x)
+
 static int
 do_zone(int cmd, void *arg1, void *arg2, void *arg3, void *arg4)
 {
@@ -10,11 +12,11 @@ do_zone(int cmd, void *arg1, void *arg2, void *arg3, void *arg4)
 
 	switch (cmd) {
 	case ZONE_CREATE:
-		if (get_udatamodel() == DATAMODEL_NATIVE) {
+//		if (get_udatamodel() == DATAMODEL_NATIVE) {
 			if (copyin(arg1, &zs, sizeof (zone_def))) {
 				return (set_errno(EFAULT));
 			}
-		} else {
+//		} else {
 //#ifdef _SYSCALL32_IMPL
 //			zone_def32 zs32;
 //
@@ -42,7 +44,7 @@ do_zone(int cmd, void *arg1, void *arg2, void *arg3, void *arg4)
 //#else
 //			panic("get_udatamodel() returned bogus result\n");
 //#endif
-		}
+//		}
 
 		return (zone_create(zs.zone_name, zs.zone_root,
 		    zs.zone_privs, zs.zone_privssz,
