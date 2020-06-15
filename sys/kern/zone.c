@@ -261,6 +261,10 @@
 #include <sys/mac.h>
 #endif
 
+#include <net/if.h>
+
+//typedef if_index_t datalink_id_t;
+
 /*
  * This constant specifies the number of seconds that threads waiting for
  * subsystems to release a zone's general-purpose references will wait before
