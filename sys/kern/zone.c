@@ -250,7 +250,6 @@
 #include <sys/cmn_err.h>
 #include <sys/modhash.h>
 #include <sys/sunddi.h>
-#include <sys/nvpair.h>
 #include <sys/rctl.h>
 #include <sys/fss.h>
 #include <sys/brand.h>
@@ -262,6 +261,7 @@
 #endif
 
 #include <net/if.h>
+#include <sys/nvpair.h>
 
 //typedef if_index_t datalink_id_t;
 
