@@ -1960,6 +1960,7 @@ zone_misc_kstat_update(kstat_t *ksp, int rw)
 }
 #endif
 
+#if 0
 static kstat_t *
 zone_misc_kstat_create(zone_t *zone)
 {
@@ -2055,6 +2056,7 @@ zone_kstat_delete(zone_t *zone)
 	zone_kstat_delete_common(&zone->zone_misc_ksp,
 	    sizeof (zone_misc_kstat_t));
 }
+#endif
 
 /*
  * Called very early on in boot to initialize the ZSD list so that
