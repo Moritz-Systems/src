@@ -1819,6 +1819,7 @@ zone_nprocs_kstat_update(kstat_t *ksp, int rw)
 }
 #endif
 
+#if 0
 static int
 zone_swapresv_kstat_update(kstat_t *ksp, int rw)
 {
@@ -1957,6 +1958,7 @@ zone_misc_kstat_update(kstat_t *ksp, int rw)
 
 	return (0);
 }
+#endif
 
 static kstat_t *
 zone_misc_kstat_create(zone_t *zone)
