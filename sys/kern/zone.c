@@ -2138,7 +2138,7 @@ zone_zsd_init(void)
 	 */
 	zone0.zone_rootvp = NULL;
 	zone0.zone_vfslist = NULL;
-	zone0.zone_bootargs = initargs;
+	zone0.zone_bootargs = "";
 	zone0.zone_privset = kmem_alloc(sizeof (priv_set_t), KM_SLEEP);
 	/*
 	 * The global zone has all privileges
