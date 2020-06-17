@@ -1273,6 +1273,7 @@ zone_free_datasets(zone_t *zone)
 	list_destroy(&zone->zone_datasets);
 }
 
+#if 0
 /*
  * zone.cpu-shares resource control support.
  */
@@ -1297,6 +1298,7 @@ zone_cpu_shares_set(rctl_t *rctl, struct proc *p, rctl_entity_p_t *e,
 	e->rcep_p.zone->zone_shares = nv;
 	return (0);
 }
+#endif
 
 static rctl_ops_t zone_cpu_shares_ops = {
 	rcop_no_action,

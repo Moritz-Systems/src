@@ -450,7 +450,9 @@ typedef struct zone {
 #endif
 
 	uint_t		zone_rootpathlen; /* strlen(zone_rootpath) + 1 */
+#if 0
 	uint32_t	zone_shares;	/* FSS shares allocated to zone */
+#endif
 #if 0
 	rctl_set_t	*zone_rctls;	/* zone-wide (zone.*) rctls */
 #endif
