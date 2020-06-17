@@ -1775,11 +1775,11 @@ zone_uniqid(zone_t *zone)
 /*
  * Returns a held pointer to the "kcred" for the specified zone.
  */
-struct cred *
+kauth_cred_t
 zone_get_kcred(zoneid_t zoneid)
 {
 	zone_t *zone;
-	struct cred_t *cr;
+	kauth_cred_t cr;
 
 	if ((zone = zone_find_by_id(zoneid)) == NULL)
 		return (NULL);

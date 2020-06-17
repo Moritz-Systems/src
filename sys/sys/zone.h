@@ -497,7 +497,7 @@ typedef struct zone {
 	 */
 	struct vfs	*zone_vfslist;	/* list of FS's mounted in zone */
 	uint64_t	zone_uniqid;	/* unique zone generation number */
-	struct cred_t	*zone_kcred;	/* kcred-like, zone-limited cred */
+	kauth_cred_t zone_kcred;	/* kcred-like, zone-limited cred */
 	/*
 	 * zone_pool is protected by pool_lock().
 	 */
@@ -827,7 +827,7 @@ extern uint32_t zone_get_hostid(zone_t *);
 /*
  * Get the "kcred" credentials corresponding to the given zone.
  */
-extern struct cred *zone_get_kcred(zoneid_t);
+extern kauth_cred_t zone_get_kcred(zoneid_t);
 
 /*
  * Get/set the pool the zone is currently bound to.
