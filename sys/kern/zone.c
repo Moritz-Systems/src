@@ -2103,7 +2103,7 @@ zone_zsd_init(void)
 #endif
 	zone0.zone_name = GLOBAL_ZONENAME;
 	zone0.zone_nodename = hostname;
-	zone0.zone_domain = srpc_domain;
+	zone0.zone_domain = domainname;
 	zone0.zone_hostid = HW_INVALID_HOSTID;
 	zone0.zone_fs_allowed = NULL;
 	psecflags_default(&zone0.zone_secflags);
