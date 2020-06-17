@@ -238,15 +238,6 @@ extern kauth_cred_t	cred0;
     kauth_cred_setgroups(cr, ga, gc, 0, UIO_SYSSPACE)
 #define crgetsid(cr, i) (NULL)
 
-static __inline int
-groupmember(gid_t gid, cred_t *cr)
-{
-	int result;
-
-	kauth_cred_ismember_gid(cr, gid, &result);
-	return result;
-}
-
 #define set_errno(x) (x)
 #define ASSERT KASSERT
 #define MUTEX_NOT_HELD mutex_ownable
