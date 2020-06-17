@@ -2106,7 +2106,9 @@ zone_zsd_init(void)
 	zone0.zone_domain = domainname;
 	zone0.zone_hostid = hostid;
 	zone0.zone_fs_allowed = NULL;
+#if 0
 	psecflags_default(&zone0.zone_secflags);
+#endif
 	zone0.zone_ref = 1;
 	zone0.zone_id = GLOBAL_ZONEID;
 	zone0.zone_status = ZONE_IS_RUNNING;
