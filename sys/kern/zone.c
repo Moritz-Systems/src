@@ -1790,12 +1790,12 @@ struct cred *
 zone_get_kcred(zoneid_t zoneid)
 {
 	zone_t *zone;
-	kauth_cred_t *cr;
+	cred_t *cr;
 
 	if ((zone = zone_find_by_id(zoneid)) == NULL)
 		return (NULL);
 	cr = zone->zone_kcred;
-	kauth_cred_hold(cr);
+	crhold(cr);
 	zone_rele(zone);
 	return (cr);
 }

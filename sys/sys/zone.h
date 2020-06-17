@@ -495,7 +495,7 @@ typedef struct zone {
 	 */
 	struct vfs	*zone_vfslist;	/* list of FS's mounted in zone */
 	uint64_t	zone_uniqid;	/* unique zone generation number */
-	kauth_cred_t	*zone_kcred;	/* kcred-like, zone-limited cred */
+	kauth_cred_t	zone_kcred;	/* kcred-like, zone-limited cred */
 	/*
 	 * zone_pool is protected by pool_lock().
 	 */
