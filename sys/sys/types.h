@@ -168,6 +168,8 @@ typedef	long		key_t;		/* IPC key (for Sys V IPC) */
 
 typedef id_t		zoneid_t;
 typedef unsigned short	datalink_id_t; /* if_index_t */
+#define B_FALSE		0
+#define B_TRUE		1
 
 #ifndef	mode_t
 typedef	__mode_t	mode_t;		/* permissions */
