@@ -2118,7 +2118,7 @@ zone_zsd_init(void)
 	zone0.zone_ncpus = 0;
 	zone0.zone_ncpus_online = 0;
 	zone0.zone_proc_initpid = 1;
-	zone0.zone_initname = initname;
+	zone0.zone_initname = "/sbin/init;
 	zone0.zone_lockedmem_kstat = NULL;
 	zone0.zone_swapresv_kstat = NULL;
 	zone0.zone_nprocs_kstat = NULL;

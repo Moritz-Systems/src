@@ -484,7 +484,7 @@ typedef struct zone {
 	kcondvar_t	zone_cv;	/* used to signal state changes */
 	struct proc	*zone_zsched;	/* Dummy kernel "zsched" process */
 	pid_t		zone_proc_initpid; /* pid of "init" for this zone */
-	char		*zone_initname;	/* fs path to 'init' */
+	const char	*zone_initname;	/* fs path to 'init' */
 	int		zone_boot_err;  /* for zone_boot() if boot fails */
 	char		*zone_bootargs;	/* arguments passed via zone_boot() */
 	uint64_t	zone_phys_mcap;	/* physical memory cap */
