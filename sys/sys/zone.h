@@ -486,7 +486,7 @@ typedef struct zone {
 	pid_t		zone_proc_initpid; /* pid of "init" for this zone */
 	const char	*zone_initname;	/* fs path to 'init' */
 	int		zone_boot_err;  /* for zone_boot() if boot fails */
-	char		*zone_bootargs;	/* arguments passed via zone_boot() */
+	const char	*zone_bootargs;	/* arguments passed via zone_boot() */
 	uint64_t	zone_phys_mcap;	/* physical memory cap */
 	/*
 	 * zone_kthreads is protected by zone_status_lock.
