@@ -2147,11 +2147,13 @@ hash_labelkey_cmp(mod_hash_key_t key1, mod_hash_key_t key2)
 void
 zone_init(void)
 {
+#if 0
 	rctl_dict_entry_t *rde;
 	rctl_val_t *dval;
 	rctl_set_t *set;
 	rctl_alloc_gp_t *gp;
 	rctl_entity_p_t e;
+#endif
 	int res;
 
 	ASSERT(curproc == &p0);
