@@ -2119,9 +2119,11 @@ zone_zsd_init(void)
 	zone0.zone_ncpus_online = 0;
 	zone0.zone_proc_initpid = 1;
 	zone0.zone_initname = "/sbin/init";
+#if 0
 	zone0.zone_lockedmem_kstat = NULL;
 	zone0.zone_swapresv_kstat = NULL;
 	zone0.zone_nprocs_kstat = NULL;
+#endif
 
 	list_create(&zone0.zone_ref_list, sizeof (zone_ref_t),
 	    offsetof(zone_ref_t, zref_linkage));
