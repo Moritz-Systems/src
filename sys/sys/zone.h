@@ -388,7 +388,7 @@ typedef struct zone {
 	/*
 	 * zone_name is never modified once set.
 	 */
-	char		*zone_name;	/* zone's configuration name */
+	const char		*zone_name;	/* zone's configuration name */
 	/*
 	 * zone_nodename and zone_domain are never freed once allocated.
 	 */
