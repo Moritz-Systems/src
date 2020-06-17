@@ -212,6 +212,7 @@
 #include <sys/sdt.h>
 #include <sys/kauth.h>
 #include <sys/utsname.h>
+:#include <sys/kernel.h>
 
 #define MUTEX_HELD(x)           (mutex_owned(x))
 #define MUTEX_NOT_HELD(x)       (!mutex_owned(x) || panicstr != NULL)
@@ -2101,7 +2102,7 @@ zone_zsd_init(void)
 	zone0.zone_ipc.ipcq_msgmni = 0;
 #endif
 	zone0.zone_name = GLOBAL_ZONENAME;
-	zone0.zone_nodename = utsname.nodename;
+	zone0.zone_nodename = hostname;
 	zone0.zone_domain = srpc_domain;
 	zone0.zone_hostid = HW_INVALID_HOSTID;
 	zone0.zone_fs_allowed = NULL;
