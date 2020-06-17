@@ -207,6 +207,7 @@
 #include <sys/id_space.h>
 #include <sys/sysevent.h>
 #include <sys/mutex.h>
+#include <sys/sdt.h>
 
 #define set_errno(x) (x)
 #define ASSERT KASSERT
