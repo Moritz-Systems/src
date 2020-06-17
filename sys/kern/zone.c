@@ -1790,7 +1790,7 @@ struct cred *
 zone_get_kcred(zoneid_t zoneid)
 {
 	zone_t *zone;
-	cred_t *cr;
+	struct cred_t *cr;
 
 	if ((zone = zone_find_by_id(zoneid)) == NULL)
 		return (NULL);
