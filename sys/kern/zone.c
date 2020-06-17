@@ -212,6 +212,7 @@
 #define set_errno(x) (x)
 #define ASSERT KASSERT
 #define MUTEX_NOT_HELD mutex_ownable
+#define MUTEX_HELD mutex_owned
 
 //typedef if_index_t datalink_id_t;
 
@@ -753,7 +754,7 @@ zone_setspecific(zone_key_t key, zone_t *zone, const void *data)
 		/*
 		 * Replace old value with new
 		 */
-		t->zsd_data = (void *)data;
+		t->zsd_data = __UNCONST(data);
 		mutex_exit(&zone->zone_lock);
 		return (0);
 	}
