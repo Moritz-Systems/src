@@ -264,6 +264,7 @@
 #include <sys/nvpair.h>
 #include <sys/modhash.h>
 #include <sys/id_space.h>
+#include <sys/sysevent.h>
 
 //typedef if_index_t datalink_id_t;
 
