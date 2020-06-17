@@ -201,70 +201,16 @@
 #include <sys/types.h>
 #include <sys/zone.h>
 #include <sys/syscallargs.h>
-
-#define set_errno(x) (x)
-
-#if 0
-#include <sys/priv_impl.h>
-#include <sys/cred.h>
-#include <c2/audit.h>
-#include <sys/debug.h>
-#include <sys/file.h>
-#include <sys/kmem.h>
-#include <sys/kstat.h>
-#include <sys/mutex.h>
-#include <sys/note.h>
-#include <sys/pathname.h>
-#include <sys/proc.h>
-#include <sys/project.h>
-#include <sys/sysevent.h>
-#include <sys/task.h>
-#include <sys/systm.h>
-#include <sys/types.h>
-#include <sys/utsname.h>
-#include <sys/vnode.h>
-#include <sys/vfs.h>
-#include <sys/systeminfo.h>
-#include <sys/policy.h>
-#include <sys/cred_impl.h>
-#include <sys/contract_impl.h>
-#include <sys/contract/process_impl.h>
-#include <sys/class.h>
-#include <sys/pool.h>
-#include <sys/pool_pset.h>
-#include <sys/pset.h>
-#include <sys/strlog.h>
-#include <sys/sysmacros.h>
-#include <sys/callb.h>
-#include <sys/vmparam.h>
-#include <sys/corectl.h>
-#include <sys/ipc_impl.h>
-#include <sys/klpd.h>
-
-#include <sys/door.h>
-#include <sys/cpuvar.h>
-#include <sys/sdt.h>
-
-#include <sys/uadmin.h>
-#include <sys/session.h>
-#include <sys/cmn_err.h>
-#include <sys/modhash.h>
-#include <sys/sunddi.h>
-#include <sys/rctl.h>
-#include <sys/fss.h>
-#include <sys/brand.h>
-#include <sys/zone.h>
-#include <net/if.h>
-#include <sys/cpucaps.h>
-#include <vm/seg.h>
-#include <sys/mac.h>
-#endif
-
 #include <net/if.h>
 #include <sys/nvpair.h>
 #include <sys/modhash.h>
 #include <sys/id_space.h>
 #include <sys/sysevent.h>
+#include <sys/mutex.h>
+
+#define set_errno(x) (x)
+#define ASSERT KASSERT
+#define MUTEX_NOT_HELD mutex_ownable
 
 //typedef if_index_t datalink_id_t;
 
