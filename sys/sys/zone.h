@@ -437,7 +437,7 @@ typedef struct zone {
 	 * zone_rootvp and zone_rootpath can never be modified once set.
 	 */
 	struct vnode	*zone_rootvp;	/* zone's root vnode */
-	char		*zone_rootpath;	/* Path to zone's root + '/' */
+	const char	*zone_rootpath;	/* Path to zone's root + '/' */
 	ushort_t	zone_flags;	/* misc flags */
 	zone_status_t	zone_status;	/* protected by zone_status_lock */
 	uint_t		zone_ntasks;	/* number of tasks executing in zone */
