@@ -211,6 +211,7 @@
 #include <sys/mutex.h>
 #include <sys/sdt.h>
 #include <sys/kauth.h>
+#include <sys/utsname.h>
 
 #define MUTEX_HELD(x)           (mutex_owned(x))
 #define MUTEX_NOT_HELD(x)       (!mutex_owned(x) || panicstr != NULL)
