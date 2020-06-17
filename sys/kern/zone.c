@@ -4238,6 +4238,7 @@ zone_is_nested(const char *rootpath)
 	return (B_FALSE);
 }
 
+#if 0
 static int
 zone_set_privset(zone_t *zone, const priv_set_t *zone_privs,
     size_t zone_privssz)
@@ -4257,6 +4258,7 @@ zone_set_privset(zone_t *zone, const priv_set_t *zone_privs,
 	zone->zone_privset = privs;
 	return (0);
 }
+#endif
 
 /*
  * We make creative use of nvlists to pass in rctls from userland.  The list is
