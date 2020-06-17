@@ -262,6 +262,7 @@
 
 #include <net/if.h>
 #include <sys/nvpair.h>
+#include <sys/modhash.h>
 
 //typedef if_index_t datalink_id_t;
 
