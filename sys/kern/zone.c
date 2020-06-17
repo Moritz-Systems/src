@@ -371,7 +371,7 @@ const char  *zone_status_table[] = {
  * This array contains the names of the subsystems listed in zone_ref_subsys_t
  * (see sys/zone.h).
  */
-static char *zone_ref_subsys_names[] = {
+static const char *zone_ref_subsys_names[] = {
 	"NFS",		/* ZONE_REF_NFS */
 	"NFSv4",	/* ZONE_REF_NFSV4 */
 	"SMBFS",	/* ZONE_REF_SMBFS */
@@ -381,6 +381,7 @@ static char *zone_ref_subsys_names[] = {
 	"IPC"		/* ZONE_REF_IPC */
 };
 
+#if 0
 /*
  * This isn't static so lint doesn't complain.
  */
@@ -395,9 +396,10 @@ rctl_hndl_t rc_zone_shmmax;
 rctl_hndl_t rc_zone_shmmni;
 rctl_hndl_t rc_zone_semmni;
 rctl_hndl_t rc_zone_msgmni;
+#endif
 
 const char * const zone_default_initname = "/sbin/init";
-static char * const zone_prefix = "/zone/";
+static const char * const zone_prefix = "/zone/";
 static int zone_shutdown(zoneid_t zoneid);
 static int zone_add_datalink(zoneid_t, datalink_id_t);
 static int zone_remove_datalink(zoneid_t, datalink_id_t);
