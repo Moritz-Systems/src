@@ -12,6 +12,7 @@
 #include <sys/rwlock.h>
 #include <sys/list.h>
 #include <sys/resource.h>
+#include <sys/pset.h>
 
 #ifdef	__cplusplus
 extern "C" {
