@@ -2082,6 +2082,7 @@ zone_zsd_init(void)
 	mutex_init(&zone0.zone_lock, NULL, MUTEX_DEFAULT, NULL);
 	mutex_init(&zone0.zone_nlwps_lock, NULL, MUTEX_DEFAULT, NULL);
 	mutex_init(&zone0.zone_mem_lock, NULL, MUTEX_DEFAULT, NULL);
+#if 0
 	zone0.zone_shares = 1;
 	zone0.zone_nlwps = 0;
 	zone0.zone_nlwps_ctl = INT_MAX;
@@ -2097,6 +2098,7 @@ zone_zsd_init(void)
 	zone0.zone_ipc.ipcq_shmmni = 0;
 	zone0.zone_ipc.ipcq_semmni = 0;
 	zone0.zone_ipc.ipcq_msgmni = 0;
+#endif
 	zone0.zone_name = GLOBAL_ZONENAME;
 	zone0.zone_nodename = utsname.nodename;
 	zone0.zone_domain = srpc_domain;
