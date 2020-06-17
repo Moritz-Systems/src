@@ -1789,6 +1789,7 @@ zone_get_kcred(zoneid_t zoneid)
 	return (cr);
 }
 
+#if 0
 static int
 zone_lockedmem_kstat_update(kstat_t *ksp, int rw)
 {
@@ -1816,6 +1817,7 @@ zone_nprocs_kstat_update(kstat_t *ksp, int rw)
 	zk->zk_value.value.ui64 = zone->zone_nprocs_ctl;
 	return (0);
 }
+#endif
 
 static int
 zone_swapresv_kstat_update(kstat_t *ksp, int rw)
