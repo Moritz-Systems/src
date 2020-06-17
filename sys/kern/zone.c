@@ -198,6 +198,8 @@
  *
  */
 
+#define	__KAUTH_PRIVATE
+
 #include <sys/types.h>
 #include <sys/zone.h>
 #include <sys/syscallargs.h>
