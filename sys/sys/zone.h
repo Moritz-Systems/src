@@ -492,7 +492,9 @@ typedef struct zone {
 	 * zone_kthreads is protected by zone_status_lock.
 	 */
 	struct lwp	*zone_kthreads;	/* kernel threads in zone */
+#if 0
 	struct priv_set	*zone_privset;	/* limit set for zone */
+#endif
 	/*
 	 * zone_vfslist is protected by vfs_list_lock().
 	 */
