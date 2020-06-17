@@ -212,6 +212,10 @@
 #include <sys/sdt.h>
 #include <sys/kauth.h>
 
+#define MUTEX_HELD(x)           (mutex_owned(x))
+#define MUTEX_NOT_HELD(x)       (!mutex_owned(x) || panicstr != NULL)
+#define mutex_init(a, b, c, d)  mutex_init(a, MUTEX_DEFAULT, IPL_NONE)
+
 
 #define	CRED()		(kauth_cred_get())
 #define	kcred		cred0
