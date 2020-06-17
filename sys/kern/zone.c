@@ -244,8 +244,6 @@ extern kauth_cred_t	cred0;
 
 #define set_errno(x) (x)
 #define ASSERT KASSERT
-#define MUTEX_NOT_HELD mutex_ownable
-#define MUTEX_HELD mutex_owned
 
 //typedef if_index_t datalink_id_t;
 
