@@ -1300,13 +1300,16 @@ zone_cpu_shares_set(rctl_t *rctl, struct proc *p, rctl_entity_p_t *e,
 }
 #endif
 
+#if 0
 static rctl_ops_t zone_cpu_shares_ops = {
 	rcop_no_action,
 	zone_cpu_shares_usage,
 	zone_cpu_shares_set,
 	rcop_no_test
 };
+#endif
 
+#if 0
 /*
  * zone.cpu-cap resource control support.
  */
@@ -1359,7 +1362,9 @@ zone_lwps_usage(rctl_t *r, proc_t *p)
 
 	return (nlwps);
 }
+#endif
 
+#if 0
 /*ARGSUSED*/
 static int
 zone_lwps_test(rctl_t *r, proc_t *p, rctl_entity_p_t *e, rctl_val_t *rcntl,
@@ -1453,7 +1458,9 @@ static rctl_ops_t zone_procs_ops = {
 	zone_procs_set,
 	zone_procs_test,
 };
+#endif
 
+#if 0
 /*ARGSUSED*/
 static rctl_qty_t
 zone_shmmax_usage(rctl_t *rctl, struct proc *p)
@@ -1548,7 +1555,9 @@ zone_msgmni_usage(rctl_t *rctl, struct proc *p)
 	ASSERT(MUTEX_HELD(&p->p_lock));
 	return (p->p_zone->zone_ipc.ipcq_msgmni);
 }
+#endif
 
+#if 0
 /*ARGSUSED*/
 static int
 zone_msgmni_test(rctl_t *r, proc_t *p, rctl_entity_p_t *e, rctl_val_t *rval,
@@ -1720,6 +1729,7 @@ static rctl_ops_t zone_max_lofi_ops = {
 	zone_max_lofi_set,
 	zone_max_lofi_test
 };
+#endif
 
 /*
  * Helper function to brand the zone with a unique ID.
