@@ -2139,7 +2139,9 @@ zone_zsd_init(void)
 	zone0.zone_rootvp = NULL;
 	zone0.zone_vfslist = NULL;
 	zone0.zone_bootargs = "";
+#if 0
 	zone0.zone_privset = kmem_alloc(sizeof (priv_set_t), KM_SLEEP);
+#endif
 	/*
 	 * The global zone has all privileges
 	 */
@@ -4535,10 +4537,12 @@ zone_create(const char *zone_name, const char *zone_root,
 		zone_free(zone);
 		return (zone_create_error(error, 0, extended_error));
 	}
+#if 0
 	if ((error = zone_set_privset(zone, zone_privs, zone_privssz)) != 0) {
 		zone_free(zone);
 		return (zone_create_error(error, 0, extended_error));
 	}
+#endif
 
 	/* initialize node name to be the same as zone name */
 	zone->zone_nodename = kmem_alloc(_SYS_NMLN, KM_SLEEP);
