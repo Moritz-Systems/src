@@ -77,7 +77,7 @@ uint_t mod_hash_byptr(void *, mod_hash_key_t);
 /*
  * ID hash table
  */
-mod_hash_t *mod_hash_create_idhash(char *, size_t, void (*)(mod_hash_val_t));
+mod_hash_t *mod_hash_create_idhash(const char *, size_t, void (*)(mod_hash_val_t));
 void mod_hash_destroy_idhash(mod_hash_t *);
 int mod_hash_idkey_cmp(mod_hash_key_t, mod_hash_key_t);
 uint_t mod_hash_byid(void *, mod_hash_key_t);

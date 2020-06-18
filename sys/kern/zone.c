@@ -2353,7 +2353,9 @@ zone_init(void)
 	 */
 	rw_init(&zone0.zone_mntfs_db_lock, NULL, RW_DEFAULT, NULL);
 
+#if 0
 	zone0.zone_ustate = cpu_uarray_zalloc(ZONE_USTATE_MAX, KM_SLEEP);
+#endif
 
 	mutex_enter(&zonehash_lock);
 	zone_uniqid(&zone0);
