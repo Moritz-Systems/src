@@ -2365,6 +2365,8 @@ zone_init(void)
 	    mod_hash_null_valdtor);
 	zonehashbyname = mod_hash_create_strhash("zone_by_name",
 	    zone_hash_size, mod_hash_null_valdtor);
+
+#if 0
 	/*
 	 * maintain zonehashbylabel only for labeled systems
 	 */
@@ -2373,6 +2375,8 @@ zone_init(void)
 		    zone_hash_size, mod_hash_null_keydtor,
 		    mod_hash_null_valdtor, hash_bylabel, NULL,
 		    hash_labelkey_cmp, KM_SLEEP);
+#endif
+
 	zonecount = 1;
 
 	(void) mod_hash_insert(zonehashbyid, (mod_hash_key_t)GLOBAL_ZONEID,
