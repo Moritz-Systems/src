@@ -2478,8 +2478,10 @@ zone_free(zone_t *zone)
 		kmem_free(__UNCONST(zone->zone_rootpath), zone->zone_rootpathlen);
 	if (zone->zone_name != NULL)
 		kmem_free(__UNCONST(zone->zone_name), ZONENAME_MAX);
+#if 0
 	if (zone->zone_slabel != NULL)
 		label_rele(zone->zone_slabel);
+#endif
 	if (zone->zone_nodename != NULL)
 		kmem_free(zone->zone_nodename, _SYS_NMLN);
 	if (zone->zone_domain != NULL)
