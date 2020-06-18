@@ -2475,9 +2475,9 @@ zone_free(zone_t *zone)
 	if (zone->zone_rootvp != NULL)
 		VN_RELE(zone->zone_rootvp);
 	if (zone->zone_rootpath)
-		kmem_free(zone->zone_rootpath, zone->zone_rootpathlen);
+		kmem_free(__UNCONST(zone->zone_rootpath), zone->zone_rootpathlen);
 	if (zone->zone_name != NULL)
-		kmem_free(zone->zone_name, ZONENAME_MAX);
+		kmem_free(__UNCONST(zone->zone_name), ZONENAME_MAX);
 	if (zone->zone_slabel != NULL)
 		label_rele(zone->zone_slabel);
 	if (zone->zone_nodename != NULL)
