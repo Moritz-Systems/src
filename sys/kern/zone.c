@@ -2429,12 +2429,16 @@ zone_free(zone_t *zone)
 	    zone_status_get(zone) == ZONE_IS_UNINITIALIZED);
 	ASSERT(list_is_empty(&zone->zone_ref_list));
 
+#if 0
 	/*
 	 * Remove any zone caps.
 	 */
 	cpucaps_zone_remove(zone);
+#endif
 
+#if 0
 	ASSERT(zone->zone_cpucap == NULL);
+#endif
 
 	/* remove from deathrow list */
 	if (zone_status_get(zone) == ZONE_IS_DEAD) {
