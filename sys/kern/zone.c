@@ -218,6 +218,7 @@
 #define MUTEX_NOT_HELD(x)       (!mutex_owned(x) || panicstr != NULL)
 #define mutex_init(a, b, c, d)  mutex_init(a, MUTEX_DEFAULT, IPL_NONE)
 
+#define rw_init(a, b, c, d) rw_init(a)
 
 #define	CRED()		(kauth_cred_get())
 #define	kcred		cred0
