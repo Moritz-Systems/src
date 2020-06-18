@@ -58,7 +58,7 @@ typedef struct mod_hash mod_hash_t;
 /*
  * String hash table
  */
-mod_hash_t *mod_hash_create_strhash(char *, size_t, void (*)(mod_hash_val_t));
+mod_hash_t *mod_hash_create_strhash(const char *, size_t, void (*)(mod_hash_val_t));
 void mod_hash_destroy_strhash(mod_hash_t *);
 int mod_hash_strkey_cmp(mod_hash_key_t, mod_hash_key_t);
 void mod_hash_strkey_dtor(mod_hash_key_t);
