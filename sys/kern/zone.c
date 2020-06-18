@@ -2486,10 +2486,14 @@ zone_free(zone_t *zone)
 		kmem_free(zone->zone_nodename, _SYS_NMLN);
 	if (zone->zone_domain != NULL)
 		kmem_free(zone->zone_domain, _SYS_NMLN);
+#if 0
 	if (zone->zone_privset != NULL)
 		kmem_free(zone->zone_privset, sizeof (priv_set_t));
+#endif
+#if 0
 	if (zone->zone_rctls != NULL)
 		rctl_set_free(zone->zone_rctls);
+#endif
 	if (zone->zone_bootargs != NULL)
 		strfree(zone->zone_bootargs);
 	if (zone->zone_initname != NULL)
