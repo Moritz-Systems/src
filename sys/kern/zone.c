@@ -213,10 +213,23 @@
 #include <sys/kauth.h>
 #include <sys/utsname.h>
 #include <sys/kernel.h>
+#include <sys/vnode.h>
 
 #define MUTEX_HELD(x)           (mutex_owned(x))
 #define MUTEX_NOT_HELD(x)       (!mutex_owned(x) || panicstr != NULL)
 #define mutex_init(a, b, c, d)  mutex_init(a, MUTEX_DEFAULT, IPL_NONE)
+
+#define VN_HOLD(v)      vref(v)
+#define VN_RELE(v)                                                    \
+do {                                                                  \
+        if ((v)->v_usecount == 0) {                                   \
+                printf("VN_RELE(%s,%d): %p unused\n", __FILE__, __LINE__, v); \
+                vprint("VN_RELE", (v));                               \
+                panic("VN_RELE");                                     \
+        } else {                                                      \
+                vrele(v);                                             \
+        }                                                             \
+} while (/*CONSTCOND*/0)
 
 #define rw_init(a, b, c, d) rw_init(a)
 
