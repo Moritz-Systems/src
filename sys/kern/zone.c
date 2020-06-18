@@ -2381,13 +2381,15 @@ zone_init(void)
 
 	(void) mod_hash_insert(zonehashbyid, (mod_hash_key_t)GLOBAL_ZONEID,
 	    (mod_hash_val_t)&zone0);
-	(void) mod_hash_insert(zonehashbyname, (mod_hash_key_t)zone0.zone_name,
+	(void) mod_hash_insert(zonehashbyname, (mod_hash_key_t)__UNCONST(zone0.zone_name),
 	    (mod_hash_val_t)&zone0);
+#if 0
 	if (is_system_labeled()) {
 		zone0.zone_flags |= ZF_HASHED_LABEL;
 		(void) mod_hash_insert(zonehashbylabel,
 		    (mod_hash_key_t)zone0.zone_slabel, (mod_hash_val_t)&zone0);
 	}
+#endif
 	mutex_exit(&zonehash_lock);
 
 	/*
@@ -2417,8 +2419,10 @@ zone_free(zone_t *zone)
 {
 	ASSERT(zone != global_zone);
 	ASSERT(zone->zone_ntasks == 0);
+#if 0
 	ASSERT(zone->zone_nlwps == 0);
 	ASSERT(zone->zone_nprocs == 0);
+#endif
 	ASSERT(zone->zone_cred_ref == 0);
 	ASSERT(zone->zone_kcred == NULL);
 	ASSERT(zone_status_get(zone) == ZONE_IS_DEAD ||
