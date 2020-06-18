@@ -2451,7 +2451,9 @@ zone_free(zone_t *zone)
 	list_destroy(&zone->zone_ref_list);
 	zone_free_zsd(zone);
 	zone_free_datasets(zone);
+#if 0
 	list_destroy(&zone->zone_dl_list);
+#endif
 
 	cpu_uarray_free(zone->zone_ustate);
 
