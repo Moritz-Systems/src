@@ -2151,8 +2151,8 @@ zone_zsd_init(void)
 	/*
 	 * Add p0 to the global zone
 	 */
-	zone0.zone_zsched = &p0;
-	p0.p_zone = &zone0;
+	zone0.zone_zsched = &proc0;
+	proc0.p_zone = &zone0;
 }
 
 /*

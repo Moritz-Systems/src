@@ -312,6 +312,7 @@ struct proc {
 	struct lcproc	*p_lwpctl;	/* p, a: _lwp_ctl() information */
 	pid_t		p_ppid;		/* :: cached parent pid */
 	char		*p_path;	/* :: full pathname of executable */
+	struct zone	*p_zone;	/* ??: zone in which process lives */
 
 /*
  * End area that is zeroed on creation
