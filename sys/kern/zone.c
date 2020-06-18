@@ -2342,8 +2342,10 @@ zone_init(void)
 #if 0
 	zone0.zone_slabel = l_admin_low;
 #endif
+#if 0
 	rw_init(&zone0.zone_mlps.mlpl_rwlock, NULL, RW_DEFAULT, NULL);
 	label_hold(l_admin_low);
+#endif
 
 	/*
 	 * Initialise the lock for the database structure used by mntfs.
