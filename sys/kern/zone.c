@@ -261,6 +261,9 @@ extern kauth_cred_t	cred0;
 #define set_errno(x) (x)
 #define ASSERT KASSERT
 
+#define strfree(x)	kmem_strfree(x)
+#define strdup(s)	kmem_strdup((s), KM_SLEEP)
+
 //typedef if_index_t datalink_id_t;
 
 /*
