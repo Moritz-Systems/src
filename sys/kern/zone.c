@@ -2142,10 +2142,12 @@ zone_zsd_init(void)
 #if 0
 	zone0.zone_privset = kmem_alloc(sizeof (priv_set_t), KM_SLEEP);
 #endif
+#if 0
 	/*
 	 * The global zone has all privileges
 	 */
 	priv_fillset(zone0.zone_privset);
+#endif
 	/*
 	 * Add p0 to the global zone
 	 */
