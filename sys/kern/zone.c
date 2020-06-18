@@ -2502,7 +2502,7 @@ zone_free(zone_t *zone)
 	if (zone->zone_initname != NULL)
 		strfree(__UNCONST(zone->zone_initname));
 	if (zone->zone_fs_allowed != NULL)
-		strfree(zone->zone_fs_allowed);
+		strfree(__UNCONST(zone->zone_fs_allowed));
 	if (zone->zone_pfexecd != NULL)
 		klpd_freelist(&zone->zone_pfexecd);
 	id_free(zoneid_space, zone->zone_id);
