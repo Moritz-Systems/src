@@ -2455,7 +2455,9 @@ zone_free(zone_t *zone)
 	list_destroy(&zone->zone_dl_list);
 #endif
 
+#if 0
 	cpu_uarray_free(zone->zone_ustate);
+#endif
 
 	if (zone->zone_rootvp != NULL)
 		VN_RELE(zone->zone_rootvp);
