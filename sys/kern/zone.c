@@ -2155,6 +2155,7 @@ zone_zsd_init(void)
 	proc0.p_zone = &zone0;
 }
 
+#if 0
 /*
  * Compute a hash value based on the contents of the label and the DOI.  The
  * hash algorithm is somewhat arbitrary, but is based on the observation that
@@ -2185,7 +2186,9 @@ hash_bylabel(void *hdata, mod_hash_key_t key)
 	}
 	return (hash);
 }
+#endif
 
+#if 0
 /*
  * All that mod_hash cares about here is zero (equal) versus non-zero (not
  * equal).  This may need to be changed if less than / greater than is ever
@@ -2199,6 +2202,7 @@ hash_labelkey_cmp(mod_hash_key_t key1, mod_hash_key_t key2)
 
 	return (label_equal(lab1, lab2) ? 0 : 1);
 }
+#endif
 
 /*
  * Called by main() to initialize the zones framework.
