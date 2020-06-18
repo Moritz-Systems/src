@@ -2219,7 +2219,7 @@ zone_init(void)
 #endif
 	int res;
 
-	ASSERT(curproc == &p0);
+	ASSERT(curproc == &proc0);
 
 	/*
 	 * Create ID space for zone IDs.  ID 0 is reserved for the
@@ -2227,6 +2227,7 @@ zone_init(void)
 	 */
 	zoneid_space = id_space_create("zoneid_space", 1, MAX_ZONEID);
 
+#if 0
 	/*
 	 * Initialize generic zone resource controls, if any.
 	 */
@@ -2267,7 +2268,9 @@ zone_init(void)
 	rc_zone_shmmax = rctl_register("zone.max-shm-memory",
 	    RCENTITY_ZONE, RCTL_GLOBAL_DENY_ALWAYS | RCTL_GLOBAL_NOBASIC |
 	    RCTL_GLOBAL_BYTES, UINT64_MAX, UINT64_MAX, &zone_shmmax_ops);
+#endif
 
+#if 0
 	/*
 	 * Create a rctl_val with PRIVILEGED, NOACTION, value = 1.  Then attach
 	 * this at the head of the rctl_dict_entry for ``zone.cpu-shares''.
@@ -2296,7 +2299,9 @@ zone_init(void)
 	    RCENTITY_ZONE, RCTL_GLOBAL_NOBASIC | RCTL_GLOBAL_COUNT |
 	    RCTL_GLOBAL_DENY_ALWAYS, UINT64_MAX, UINT64_MAX,
 	    &zone_max_lofi_ops);
+#endif
 
+#if 0
 	/*
 	 * Initialize the ``global zone''.
 	 */
@@ -2312,24 +2317,31 @@ zone_init(void)
 	zone0.zone_nprocs = 1;
 	zone0.zone_ntasks = 1;
 	mutex_exit(&p0.p_lock);
+#endif
 	zone0.zone_restart_init = B_TRUE;
+#if 0
 	zone0.zone_brand = &native_brand;
 	rctl_prealloc_destroy(gp);
+#endif
 	/*
 	 * pool_default hasn't been initialized yet, so we let pool_init()
 	 * take care of making sure the global zone is in the default pool.
 	 */
 
+#if 0
 	/*
 	 * Initialize global zone kstats
 	 */
 	zone_kstat_create(&zone0);
+#endif
 
 	/*
 	 * Initialize zone label.
 	 * mlp are initialized when tnzonecfg is loaded.
 	 */
+#if 0
 	zone0.zone_slabel = l_admin_low;
+#endif
 	rw_init(&zone0.zone_mlps.mlpl_rwlock, NULL, RW_DEFAULT, NULL);
 	label_hold(l_admin_low);
 
