@@ -2498,9 +2498,9 @@ zone_free(zone_t *zone)
 		rctl_set_free(zone->zone_rctls);
 #endif
 	if (zone->zone_bootargs != NULL)
-		strfree(zone->zone_bootargs);
+		strfree(__UNCONST(zone->zone_bootargs));
 	if (zone->zone_initname != NULL)
-		strfree(zone->zone_initname);
+		strfree(__UNCONST(zone->zone_initname));
 	if (zone->zone_fs_allowed != NULL)
 		strfree(zone->zone_fs_allowed);
 	if (zone->zone_pfexecd != NULL)
@@ -2572,7 +2572,7 @@ zone_set_bootargs(zone_t *zone, const char *zone_bootargs)
 		goto done;	/* EFAULT or ENAMETOOLONG */
 
 	if (zone->zone_bootargs != NULL)
-		strfree(zone->zone_bootargs);
+		strfree(__UNCONST(zone->zone_bootargs));
 
 	zone->zone_bootargs = strdup(buf);
 
@@ -2681,7 +2681,7 @@ zone_set_initname(zone_t *zone, const char *zone_initname)
 		return (err);	/* EFAULT or ENAMETOOLONG */
 
 	if (zone->zone_initname != NULL)
-		strfree(zone->zone_initname);
+		strfree(__UNCONST(zone->zone_initname));
 
 	zone->zone_initname = kmem_alloc(strlen(initname) + 1, KM_SLEEP);
 	(void) strcpy(zone->zone_initname, initname);

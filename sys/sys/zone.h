@@ -556,7 +556,7 @@ typedef struct zone {
 
 	struct klpd_reg		*zone_pfexecd;
 
-	char		*zone_fs_allowed;
+	const char		*zone_fs_allowed;
 #if 0
 	rctl_qty_t	zone_nprocs;	/* number of processes in the zone */
 	rctl_qty_t	zone_nprocs_ctl;	/* current limit protected by */
