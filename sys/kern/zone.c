@@ -3254,6 +3254,7 @@ zone_find_by_id(zoneid_t zoneid)
 	return (zone);
 }
 
+#if 0
 /*
  * Similar to zone_find_by_id, but using zone label as the key.
  */
@@ -3281,6 +3282,7 @@ zone_find_by_label(const ts_label_t *label)
 	mutex_exit(&zonehash_lock);
 	return (zone);
 }
+#endif
 
 /*
  * Similar to zone_find_by_id, but using zone name as the key.
