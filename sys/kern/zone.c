@@ -215,6 +215,7 @@
 #include <sys/kernel.h>
 #include <sys/vnode.h>
 #include <sys/time.h>
+#include <sys/callb.h>
 
 #define MUTEX_HELD(x)           (mutex_owned(x))
 #define MUTEX_NOT_HELD(x)       (!mutex_owned(x) || panicstr != NULL)

@@ -26,11 +26,42 @@
 #ifndef	_SYS_CALLB_H
 #define	_SYS_CALLB_H
 
-#include <sys/kcondvar.h>
+#include <sys/condvar.h>
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
+
+typedef struct lwp   *kthread_id_t;
+
+typedef enum {
+        CV_DEFAULT,
+        CV_DRIVER
+} kcv_type_t;
+ 
+typedef enum {
+        TR_CLOCK_TICK,   
+} time_res_t;
+ 
+#define cv_init(a, b, c, d)     cv_init(a, "zfscv")
+
+static inline clock_t
+cv_timedwait_hires(kcondvar_t *cvp, kmutex_t *mp, hrtime_t tim, hrtime_t res,   
+    int flag)
+{
+        extern int hz;
+        int ticks = ((uint64_t)tim * hz) / 1000000000;
+
+        return cv_timedwait(cvp, mp, ticks);
+}
+ 
+static inline clock_t
+cv_reltimedwait(kcondvar_t *cvp, kmutex_t *mp, clock_t delta, time_res_t res)
+{
+ 
+        cv_wait(cvp, mp);
+        return 0;
+}
 
 /*
  * definitions of callback classes (c_class)
