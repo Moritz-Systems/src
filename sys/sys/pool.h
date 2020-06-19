@@ -29,8 +29,8 @@
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/nvpair.h>
-#include <sys/procset.h>
-#include <sys/list.h>
+//#include <sys/procset.h>
+//#include <sys/list.h>
 
 #ifdef	__cplusplus
 extern "C" {

@@ -171,6 +171,21 @@ typedef unsigned short	datalink_id_t; /* if_index_t */
 #define B_FALSE		0
 #define B_TRUE		1
 
+typedef unsigned char   uchar_t;
+typedef unsigned short  ushort_t;
+typedef unsigned int    uint_t;
+typedef unsigned long   ulong_t;
+typedef unsigned long   ulong_t;
+
+typedef void *       caddr_t;
+
+#ifndef __defined_hr_t
+#define __defined_hr_t
+typedef longlong_t      hrtime_t;
+#endif
+
+typedef kauth_cred_t cred_t;
+
 #ifndef	mode_t
 typedef	__mode_t	mode_t;		/* permissions */
 #define	mode_t		__mode_t

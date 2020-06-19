@@ -18,23 +18,6 @@
 extern "C" {
 #endif
 
-/* POSIX Extensions */
-
-typedef unsigned char   uchar_t;
-typedef unsigned short  ushort_t;
-typedef unsigned int    uint_t;
-typedef unsigned long   ulong_t;
-typedef unsigned long   ulong_t;
-
-typedef void *       caddr_t;
-
-#ifndef __defined_hr_t
-#define __defined_hr_t
-typedef longlong_t	hrtime_t;
-#endif
-
-typedef kauth_cred_t cred_t;
-
 /*
  * NOTE
  *
