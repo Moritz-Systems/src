@@ -184,8 +184,6 @@ typedef void *       caddr_t;
 typedef longlong_t      hrtime_t;
 #endif
 
-typedef kauth_cred_t cred_t;
-
 #ifndef	mode_t
 typedef	__mode_t	mode_t;		/* permissions */
 #define	mode_t		__mode_t

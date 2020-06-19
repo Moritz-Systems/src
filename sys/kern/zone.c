@@ -222,6 +222,8 @@
 #define MUTEX_NOT_HELD(x)       (!mutex_owned(x) || panicstr != NULL)
 #define mutex_init(a, b, c, d)  mutex_init(a, MUTEX_DEFAULT, IPL_NONE)
 
+typedef kauth_cred_t cred_t;
+
 #define VN_HOLD(v)      vref(v)
 #define VN_RELE(v)                                                    \
 do {                                                                  \
