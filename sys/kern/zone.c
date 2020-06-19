@@ -266,6 +266,7 @@ extern kauth_cred_t	cred0;
 #define strdup(s)	kmem_strdup((s), KM_SLEEP)
 
 #define  INITNAME_SZ     32
+#define       PC_CLNMSZ       16
 
 static uint64_t
 gethrtime(void)
@@ -2722,6 +2723,7 @@ zone_set_phys_mcap(zone_t *zone, const uint64_t *zone_mcap)
 	return (err);
 }
 
+#if 0
 static int
 zone_set_sched_class(zone_t *zone, const char *new_class)
 {
@@ -2741,6 +2743,7 @@ zone_set_sched_class(zone_t *zone, const char *new_class)
 
 	return (0);
 }
+#endif
 
 /*
  * Block indefinitely waiting for (zone_status >= status)

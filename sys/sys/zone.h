@@ -533,7 +533,9 @@ typedef struct zone {
 	struct brand	*zone_brand;		/* zone's brand */
 	void		*zone_brand_data;	/* store brand specific data */
 #endif
+#if 0
 	id_t		zone_defaultcid;	/* dflt scheduling class id */
+#endif
 #if 0
 	kstat_t		*zone_swapresv_kstat;
 	kstat_t		*zone_lockedmem_kstat;
