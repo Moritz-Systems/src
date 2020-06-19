@@ -265,6 +265,8 @@ extern kauth_cred_t	cred0;
 #define strfree(x)	kmem_strfree(x)
 #define strdup(s)	kmem_strdup((s), KM_SLEEP)
 
+#define  INITNAME_SZ     32
+
 static uint64_t
 gethrtime(void)
 {
@@ -2680,7 +2682,7 @@ zone_set_fs_allowed(zone_t *zone, const char *zone_fs_allowed)
 		goto done;
 
 	if (zone->zone_fs_allowed != NULL)
-		strfree(zone->zone_fs_allowed);
+		strfree(__UNCONST(zone->zone_fs_allowed));
 
 	zone->zone_fs_allowed = strdup(buf);
 
@@ -2704,7 +2706,7 @@ zone_set_initname(zone_t *zone, const char *zone_initname)
 		strfree(__UNCONST(zone->zone_initname));
 
 	zone->zone_initname = kmem_alloc(strlen(initname) + 1, KM_SLEEP);
-	(void) strcpy(zone->zone_initname, initname);
+	(void) strcpy(__UNCONST(zone->zone_initname), initname);
 	return (0);
 }
 
