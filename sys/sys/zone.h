@@ -529,8 +529,10 @@ typedef struct zone {
 #endif
 
 	boolean_t	zone_restart_init;	/* Restart init if it dies? */
+#if 0
 	struct brand	*zone_brand;		/* zone's brand */
 	void		*zone_brand_data;	/* store brand specific data */
+#endif
 	id_t		zone_defaultcid;	/* dflt scheduling class id */
 #if 0
 	kstat_t		*zone_swapresv_kstat;

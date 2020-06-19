@@ -214,6 +214,7 @@
 #include <sys/utsname.h>
 #include <sys/kernel.h>
 #include <sys/vnode.h>
+#include <sys/time.h>
 
 #define MUTEX_HELD(x)           (mutex_owned(x))
 #define MUTEX_NOT_HELD(x)       (!mutex_owned(x) || panicstr != NULL)
@@ -263,6 +264,17 @@ extern kauth_cred_t	cred0;
 
 #define strfree(x)	kmem_strfree(x)
 #define strdup(s)	kmem_strdup((s), KM_SLEEP)
+
+static uint64_t
+gethrtime(void)
+{
+        struct timespec curtime;
+
+        nanouptime(&curtime);
+
+        return (curtime.tv_sec * 1000000000UL + curtime.tv_nsec);
+
+}
 
 //typedef if_index_t datalink_id_t;
 
@@ -2510,7 +2522,9 @@ zone_free(zone_t *zone)
 	id_free(zoneid_space, zone->zone_id);
 	mutex_destroy(&zone->zone_lock);
 	cv_destroy(&zone->zone_cv);
+#if 0
 	rw_destroy(&zone->zone_mlps.mlpl_rwlock);
+#endif
 	rw_destroy(&zone->zone_mntfs_db_lock);
 	kmem_free(zone, sizeof (zone_t));
 }
@@ -2583,6 +2597,7 @@ done:
 	return (err);
 }
 
+#if 0
 static int
 zone_set_brand(zone_t *zone, const char *brand)
 {
@@ -2623,6 +2638,7 @@ zone_set_brand(zone_t *zone, const char *brand)
 	mutex_exit(&zone_status_lock);
 	return (0);
 }
+#endif
 
 static int
 zone_set_secflags(zone_t *zone, const psecflags_t *zone_secflags)
