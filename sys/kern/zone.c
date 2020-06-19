@@ -280,6 +280,12 @@ gethrtime(void)
 
 }
 
+/*ARGSUSED*/
+void
+scalehrtime(hrtime_t *hrt)
+{
+}
+
 #define SEC             1
 #define MILLISEC        1000
 #define MICROSEC        1000000
