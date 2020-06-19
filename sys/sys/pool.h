@@ -1,366 +1,141 @@
-/*	$NetBSD: pool.h,v 1.89 2019/05/09 08:16:15 skrll Exp $	*/
-
-/*-
- * Copyright (c) 1997, 1998, 1999, 2000, 2007 The NetBSD Foundation, Inc.
- * All rights reserved.
+/*
+ * CDDL HEADER START
  *
- * This code is derived from software contributed to The NetBSD Foundation
- * by Paul Kranenburg; by Jason R. Thorpe of the Numerical Aerospace
- * Simulation Facility, NASA Ames Research Center.
+ * The contents of this file are subject to the terms of the
+ * Common Development and Distribution License (the "License").
+ * You may not use this file except in compliance with the License.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+ * or http://www.opensolaris.org/os/licensing.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
  *
- * THIS SOFTWARE IS PROVIDED BY THE NETBSD FOUNDATION, INC. AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE FOUNDATION OR CONTRIBUTORS
- * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
+ * When distributing Covered Code, include this CDDL HEADER in each
+ * file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+ * If applicable, add the following below this CDDL HEADER, with the
+ * fields enclosed by brackets "[]" replaced with your own identifying
+ * information: Portions Copyright [yyyy] [name of copyright owner]
+ *
+ * CDDL HEADER END
+ */
+/*
+ * Copyright 2010 Sun Microsystems, Inc.  All rights reserved.
+ * Use is subject to license terms.
  */
 
-#ifndef _SYS_POOL_H_
-#define _SYS_POOL_H_
+#ifndef	_SYS_POOL_H
+#define	_SYS_POOL_H
 
-#include <sys/stdbool.h>
-#include <sys/stdint.h>
-
-struct pool_sysctl {
-	char pr_wchan[16];
-	uint64_t pr_flags;
-	uint64_t pr_size;
-	uint64_t pr_pagesize;
-	uint64_t pr_itemsperpage;
-	uint64_t pr_nitems;
-	uint64_t pr_nout;
-	uint64_t pr_hardlimit;
-	uint64_t pr_npages;
-	uint64_t pr_minpages;
-	uint64_t pr_maxpages;
-
-	uint64_t pr_nget;
-	uint64_t pr_nfail;
-	uint64_t pr_nput;
-	uint64_t pr_npagealloc;
-	uint64_t pr_npagefree;
-	uint64_t pr_hiwat;
-	uint64_t pr_nidle;
-
-	uint64_t pr_cache_meta_size;
-	uint64_t pr_cache_nfull;
-	uint64_t pr_cache_npartial;
-	uint64_t pr_cache_nempty;
-	uint64_t pr_cache_ncontended;
-	uint64_t pr_cache_nmiss_global;
-	uint64_t pr_cache_nhit_global;
-	uint64_t pr_cache_nmiss_pcpu;
-	uint64_t pr_cache_nhit_pcpu;
-};
-
-#ifdef _KERNEL
-#define	__POOL_EXPOSE
-#endif
-
-#ifdef __POOL_EXPOSE
-#include <sys/param.h>
-#include <sys/mutex.h>
-#include <sys/condvar.h>
-#include <sys/queue.h>
+#include <sys/types.h>
 #include <sys/time.h>
-#include <sys/tree.h>
-#include <sys/callback.h>
+#include <sys/nvpair.h>
+#include <sys/procset.h>
+#include <sys/list.h>
 
-#ifdef _KERNEL_OPT
-#include "opt_pool.h"
+#ifdef	__cplusplus
+extern "C" {
 #endif
 
-#define	POOL_PADDR_INVALID	((paddr_t) -1)
+#define	POOL_DEFAULT		0		/* default pool's ID */
+#define	POOL_MAXID		999999		/* maximum possible pool ID */
+#define	POOL_INVALID		-1
 
-struct pool;
+/* pools states */
+#define	POOL_DISABLED		0		/* pools enabled */
+#define	POOL_ENABLED		1		/* pools disabled */
 
-struct pool_allocator {
-	void		*(*pa_alloc)(struct pool *, int);
-	void		(*pa_free)(struct pool *, void *);
-	unsigned int	pa_pagesz;
+#ifdef	_KERNEL
 
-	/* The following fields are for internal use only. */
-	kmutex_t	pa_lock;
-	TAILQ_HEAD(, pool) pa_list;	/* list of pools using this allocator */
-	uint32_t	pa_refcnt;	/* number of pools using this allocator */
-	int		pa_pagemask;
-	int		pa_pageshift;
-};
+struct pool_pset;
 
-LIST_HEAD(pool_pagelist,pool_item_header);
-SPLAY_HEAD(phtree, pool_item_header);
-
-#define POOL_QUARANTINE_DEPTH	128
-typedef struct {
-	size_t rotor;
-	intptr_t list[POOL_QUARANTINE_DEPTH];
-} pool_quar_t;
-
-struct pool {
-	TAILQ_ENTRY(pool)
-			pr_poollist;
-	struct pool_pagelist
-			pr_emptypages;	/* Empty pages */
-	struct pool_pagelist
-			pr_fullpages;	/* Full pages */
-	struct pool_pagelist
-			pr_partpages;	/* Partially-allocated pages */
-	struct pool_item_header	*pr_curpage;
-	struct pool	*pr_phpool;	/* Pool item header pool */
-	struct pool_cache *pr_cache;	/* Cache for this pool */
-	unsigned int	pr_size;	/* Size of item */
-	unsigned int	pr_align;	/* Requested alignment, must be 2^n */
-	unsigned int	pr_itemoffset;	/* offset of the item space */
-	unsigned int	pr_minitems;	/* minimum # of items to keep */
-	unsigned int	pr_minpages;	/* same in page units */
-	unsigned int	pr_maxpages;	/* maximum # of pages to keep */
-	unsigned int	pr_npages;	/* # of pages allocated */
-	unsigned int	pr_itemsperpage;/* # items that fit in a page */
-	unsigned int	pr_poolid;	/* id of the pool */
-	unsigned int	pr_nitems;	/* number of available items in pool */
-	unsigned int	pr_nout;	/* # items currently allocated */
-	unsigned int	pr_hardlimit;	/* hard limit to number of allocated
-					   items */
-	unsigned int	pr_refcnt;	/* ref count for pagedaemon, etc */
-	struct pool_allocator *pr_alloc;/* back-end allocator */
-	TAILQ_ENTRY(pool) pr_alloc_list;/* link on allocator's pool list */
-
-	/* Drain hook. */
-	void		(*pr_drain_hook)(void *, int);
-	void		*pr_drain_hook_arg;
-
-	const char	*pr_wchan;	/* tsleep(9) identifier */
-	unsigned int	pr_flags;	/* r/w flags */
-	unsigned int	pr_roflags;	/* r/o flags */
-#define	PR_WAITOK	0x01	/* Note: matches KM_SLEEP */
-#define PR_NOWAIT	0x02	/* Note: matches KM_NOSLEEP */
-#define PR_WANTED	0x04
-#define PR_PHINPAGE	0x40
-#define PR_LOGGING	0x80
-#define PR_LIMITFAIL	0x100	/* even if waiting, fail if we hit limit */
-#define PR_RECURSIVE	0x200	/* pool contains pools, for vmstat(8) */
-#define PR_NOTOUCH	0x400	/* don't use free items to keep internal state*/
-#define PR_NOALIGN	0x800	/* don't assume backend alignment */
-#define	PR_LARGECACHE	0x1000	/* use large cache groups */
-#define	PR_GROWING	0x2000	/* pool_grow in progress */
-#define	PR_GROWINGNOWAIT 0x4000	/* pool_grow in progress by PR_NOWAIT alloc */
-#define	PR_ZERO		0x8000	/* zero data before returning */
-#define	PR_USEBMAP	0x10000	/* use a bitmap to manage freed items */
-
-	/*
-	 * `pr_lock' protects the pool's data structures when removing
-	 * items from or returning items to the pool, or when reading
-	 * or updating read/write fields in the pool descriptor.
-	 *
-	 * We assume back-end page allocators provide their own locking
-	 * scheme.  They will be called with the pool descriptor _unlocked_,
-	 * since the page allocators may block.
-	 */
-	kmutex_t	pr_lock;
-	kcondvar_t	pr_cv;
-	int		pr_ipl;
-
-	struct phtree	pr_phtree;
-
-	int		pr_maxcolor;	/* Cache colouring */
-	int		pr_curcolor;
-	int		pr_phoffset;	/* unused */
-
-	/*
-	 * Warning message to be issued, and a per-time-delta rate cap,
-	 * if the hard limit is reached.
-	 */
-	const char	*pr_hardlimit_warning;
-	struct timeval	pr_hardlimit_ratecap;
-	struct timeval	pr_hardlimit_warning_last;
-
-	/*
-	 * Instrumentation
-	 */
-	unsigned long	pr_nget;	/* # of successful requests */
-	unsigned long	pr_nfail;	/* # of unsuccessful requests */
-	unsigned long	pr_nput;	/* # of releases */
-	unsigned long	pr_npagealloc;	/* # of pages allocated */
-	unsigned long	pr_npagefree;	/* # of pages released */
-	unsigned int	pr_hiwat;	/* max # of pages in pool */
-	unsigned long	pr_nidle;	/* # of idle pages */
-
-	/*
-	 * Diagnostic aides.
-	 */
-	void		*pr_freecheck;
-	void		*pr_qcache;
-	bool		pr_redzone;
-	size_t		pr_reqsize;
-	size_t		pr_reqsize_with_redzone;
-#ifdef POOL_QUARANTINE
-	pool_quar_t	pr_quar;
-#endif
-};
+typedef struct pool {
+	poolid_t		pool_id;	/* pool ID */
+	uint32_t		pool_ref;	/* # of procs in this pool */
+	list_node_t		pool_link;	/* links to next/prev pools */
+	nvlist_t		*pool_props;	/* pool properties */
+	struct pool_pset	*pool_pset;	/* pool's pset */
+} pool_t;
 
 /*
- * Cache group sizes, assuming 4-byte paddr_t on !_LP64.
- * All groups will be aligned to CACHE_LINE_SIZE.
+ * Flags for pool_do_bind
  */
-#ifdef _LP64
-#define	PCG_NOBJECTS_NORMAL	15	/* 256 byte group */
-#define	PCG_NOBJECTS_LARGE	63	/* 1024 byte group */
-#else
-#define	PCG_NOBJECTS_NORMAL	14	/* 124 byte group */
-#define	PCG_NOBJECTS_LARGE	62	/* 508 byte group */
+#define	POOL_BIND_PSET	0x00000001
+#define	POOL_BIND_ALL	POOL_BIND_PSET
+
+/*
+ * Result codes for pool_get_class()
+ */
+#define	POOL_CLASS_UNSET	-1		/* no scheduling class set */
+#define	POOL_CLASS_INVAL	-2		/* class is invalid */
+
+extern int	pool_count;	/* current number of pools */
+extern pool_t	*pool_default;	/* default pool pointer */
+extern int	pool_state;	/* pools state -- enabled/disabled */
+extern void	*pool_buf;	/* last state snapshot */
+extern size_t	pool_bufsz;	/* size of pool_buf */
+
+/*
+ * Lookup routines
+ */
+extern pool_t	*pool_lookup_pool_by_id(poolid_t);
+extern pool_t	*pool_lookup_pool_by_name(char *);
+extern pool_t	*pool_lookup_pool_by_pset(int);
+
+/*
+ * Configuration routines
+ */
+extern void 	pool_init(void);
+extern int	pool_status(int);
+extern int	pool_create(int, int, id_t *);
+extern int	pool_destroy(int, int, id_t);
+extern int	pool_transfer(int, id_t, id_t, uint64_t);
+extern int	pool_assoc(poolid_t, int, id_t);
+extern int	pool_dissoc(poolid_t, int);
+extern int	pool_bind(poolid_t, idtype_t, id_t);
+extern id_t	pool_get_class(pool_t *);
+extern int	pool_do_bind(pool_t *, idtype_t, id_t, int);
+extern int	pool_query_binding(idtype_t, id_t, id_t *);
+extern int	pool_xtransfer(int, id_t, id_t, uint_t, id_t *);
+extern int	pool_pack_conf(void *, size_t, size_t *);
+extern int	pool_propput(int, int, id_t, nvpair_t *);
+extern int	pool_proprm(int, int, id_t, char *);
+extern int	pool_propget(char *, int, int, id_t, nvlist_t **);
+extern int	pool_commit(int);
+extern void	pool_get_name(pool_t *, char **);
+
+/*
+ * Synchronization routines
+ */
+extern void	pool_lock(void);
+extern int	pool_lock_intr(void);
+extern int	pool_lock_held(void);
+extern void	pool_unlock(void);
+extern void	pool_barrier_enter(void);
+extern void	pool_barrier_exit(void);
+
+typedef enum {
+	POOL_E_ENABLE,
+	POOL_E_DISABLE,
+	POOL_E_CHANGE,
+} pool_event_t;
+
+typedef void pool_event_cb_func_t(pool_event_t, poolid_t,  void *);
+
+typedef struct pool_event_cb {
+	pool_event_cb_func_t	*pec_func;
+	void			*pec_arg;
+	list_node_t		pec_list;
+} pool_event_cb_t;
+
+/*
+ * Routines used to register interest in changes in cpu pools.
+ */
+extern void pool_event_cb_register(pool_event_cb_t *);
+extern void pool_event_cb_unregister(pool_event_cb_t *);
+#endif	/* _KERNEL */
+
+#ifdef	__cplusplus
+}
 #endif
 
-typedef struct pcgpair {
-	void	*pcgo_va;		/* object virtual address */
-	paddr_t	pcgo_pa;		/* object physical address */
-} pcgpair_t;
-
-/* The pool cache group. */
-typedef struct pool_cache_group {
-	struct pool_cache_group	*pcg_next;	/* link to next group */
-	u_int			pcg_avail;	/* # available objects */
-	u_int			pcg_size;	/* max number objects */
-	pcgpair_t 		pcg_objects[1];	/* the objects */
-} pcg_t;
-
-typedef struct pool_cache_cpu {
-	uint64_t		cc_misses;
-	uint64_t		cc_hits;
-	struct pool_cache_group	*cc_current;
-	struct pool_cache_group	*cc_previous;	
-	struct pool_cache	*cc_cache;
-	int			cc_ipl;
-	int			cc_cpuindex;
-#ifdef _KERNEL
-	ipl_cookie_t		cc_iplcookie;
-#endif
-} pool_cache_cpu_t;
-
-struct pool_cache {
-	/* Pool layer. */
-	struct pool	pc_pool;
-	
-	/* Cache layer. */
-	kmutex_t	pc_lock;	/* locks cache layer */
-	TAILQ_ENTRY(pool_cache)
-			pc_cachelist;	/* entry on global cache list */
-	pcg_t		*pc_emptygroups;/* list of empty cache groups */
-	pcg_t		*pc_fullgroups;	/* list of full cache groups */
-	pcg_t		*pc_partgroups;	/* groups for reclamation */
-	struct pool	*pc_pcgpool;	/* Pool of cache groups */
-	int		pc_pcgsize;	/* Use large cache groups? */
-	int		pc_ncpu;	/* number cpus set up */
-	int		(*pc_ctor)(void *, void *, int);
-	void		(*pc_dtor)(void *, void *);
-	void		*pc_arg;	/* for ctor/ctor */
-	uint64_t	pc_hits;	/* cache layer hits */
-	uint64_t	pc_misses;	/* cache layer misses */
-	uint64_t	pc_contended;	/* contention events on cache */
-	unsigned int	pc_nempty;	/* empty groups in cache */
-	unsigned int	pc_nfull;	/* full groups in cache */
-	unsigned int	pc_npart;	/* partial groups in cache */
-	unsigned int	pc_refcnt;	/* ref count for pagedaemon, etc */
-
-	/* Diagnostic aides. */
-	void		*pc_freecheck;
-	bool		pc_redzone;
-	size_t		pc_reqsize;
-
-	/* CPU layer. */
-	pool_cache_cpu_t pc_cpu0 __aligned(CACHE_LINE_SIZE);
-	void		*pc_cpus[MAXCPUS] __aligned(CACHE_LINE_SIZE);
-};
-
-#endif /* __POOL_EXPOSE */
-
-typedef struct pool_cache *pool_cache_t;
-
-#ifdef _KERNEL
-/*
- * pool_allocator_kmem is the default that all pools get unless
- * otherwise specified.  pool_allocator_nointr is provided for
- * pools that know they will never be accessed in interrupt
- * context.
- */
-extern struct pool_allocator pool_allocator_kmem;
-extern struct pool_allocator pool_allocator_nointr;
-extern struct pool_allocator pool_allocator_meta;
-
-void		pool_subsystem_init(void);
-
-void		pool_init(struct pool *, size_t, u_int, u_int,
-		    int, const char *, struct pool_allocator *, int);
-void		pool_destroy(struct pool *);
-
-void		pool_set_drain_hook(struct pool *,
-		    void (*)(void *, int), void *);
-
-void		*pool_get(struct pool *, int);
-void		pool_put(struct pool *, void *);
-int		pool_reclaim(struct pool *);
-
-int		pool_prime(struct pool *, int);
-void		pool_setlowat(struct pool *, int);
-void		pool_sethiwat(struct pool *, int);
-void		pool_sethardlimit(struct pool *, int, const char *, int);
-bool		pool_drain(struct pool **);
-int		pool_totalpages(void);
-int		pool_totalpages_locked(void);
-
-/*
- * Debugging and diagnostic aides.
- */
-void		pool_printit(struct pool *, const char *,
-    void (*)(const char *, ...) __printflike(1, 2));
-void		pool_printall(const char *, void (*)(const char *, ...)
-    __printflike(1, 2));
-int		pool_chk(struct pool *, const char *);
-
-/*
- * Pool cache routines.
- */
-pool_cache_t	pool_cache_init(size_t, u_int, u_int, u_int, const char *,
-		    struct pool_allocator *, int, int (*)(void *, void *, int),
-		    void (*)(void *, void *), void *);
-void		pool_cache_bootstrap(pool_cache_t, size_t, u_int, u_int, u_int,
-		    const char *, struct pool_allocator *, int,
-		    int (*)(void *, void *, int), void (*)(void *, void *),
-		    void *);
-void		pool_cache_destroy(pool_cache_t);
-void		pool_cache_bootstrap_destroy(pool_cache_t);
-void		*pool_cache_get_paddr(pool_cache_t, int, paddr_t *);
-void		pool_cache_put_paddr(pool_cache_t, void *, paddr_t);
-void		pool_cache_destruct_object(pool_cache_t, void *);
-void		pool_cache_invalidate(pool_cache_t);
-bool		pool_cache_reclaim(pool_cache_t);
-void		pool_cache_set_drain_hook(pool_cache_t,
-		    void (*)(void *, int), void *);
-void		pool_cache_setlowat(pool_cache_t, int);
-void		pool_cache_sethiwat(pool_cache_t, int);
-void		pool_cache_sethardlimit(pool_cache_t, int, const char *, int);
-void		pool_cache_cpu_init(struct cpu_info *);
-
-#define		pool_cache_get(pc, f) pool_cache_get_paddr((pc), (f), NULL)
-#define		pool_cache_put(pc, o) pool_cache_put_paddr((pc), (o), \
-				          POOL_PADDR_INVALID)
-
-void 		pool_whatis(uintptr_t, void (*)(const char *, ...)
-    __printflike(1, 2));
-#endif /* _KERNEL */
-
-#endif /* _SYS_POOL_H_ */
+#endif	/* _SYS_POOL_H */
