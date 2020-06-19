@@ -3189,6 +3189,7 @@ zone_find_all_by_id(zoneid_t zoneid)
 	return (zone);
 }
 
+#if 0
 static zone_t *
 zone_find_all_by_label(const ts_label_t *label)
 {
@@ -3206,6 +3207,7 @@ zone_find_all_by_label(const ts_label_t *label)
 		zone = (zone_t *)hv;
 	return (zone);
 }
+#endif
 
 static zone_t *
 zone_find_all_by_name(char *name)
