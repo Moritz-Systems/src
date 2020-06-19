@@ -554,7 +554,9 @@ typedef struct zone {
 	struct mntelem	*zone_mntfs_db;
 	krwlock_t	zone_mntfs_db_lock;
 
+#if 0
 	struct klpd_reg		*zone_pfexecd;
+#endif
 
 	const char		*zone_fs_allowed;
 #if 0

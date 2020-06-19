@@ -2503,8 +2503,10 @@ zone_free(zone_t *zone)
 		strfree(__UNCONST(zone->zone_initname));
 	if (zone->zone_fs_allowed != NULL)
 		strfree(__UNCONST(zone->zone_fs_allowed));
+#if 0
 	if (zone->zone_pfexecd != NULL)
 		klpd_freelist(&zone->zone_pfexecd);
+#endif
 	id_free(zoneid_space, zone->zone_id);
 	mutex_destroy(&zone->zone_lock);
 	cv_destroy(&zone->zone_cv);
@@ -5424,11 +5426,13 @@ zone_destroy(zoneid_t zoneid)
 	/* Get rid of the zone's kstats */
 	zone_kstat_delete(zone);
 
+#if 0
 	/* remove the pfexecd doors */
 	if (zone->zone_pfexecd != NULL) {
 		klpd_freelist(&zone->zone_pfexecd);
 		zone->zone_pfexecd = NULL;
 	}
+#endif
 
 	/* free brand specific data */
 	if (ZONE_IS_BRANDED(zone))
