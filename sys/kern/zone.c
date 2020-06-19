@@ -3368,7 +3368,7 @@ zone_loadavg_update(void)
 {
 	zone_t *zp;
 	zone_status_t status;
-	struct loadavg_s *lavg;
+	struct loadavg *lavg;
 	hrtime_t zone_total;
 	uint64_t tmp;
 	int i;
