@@ -280,6 +280,27 @@ gethrtime(void)
 
 }
 
+#define SEC             1
+#define MILLISEC        1000
+#define MICROSEC        1000000
+#define NANOSEC         1000000000
+#define TIME_MAX        LLONG_MAX
+ 
+#define MSEC2NSEC(m)    ((hrtime_t)(m) * (NANOSEC / MILLISEC))
+#define NSEC2MSEC(n)    ((n) / (NANOSEC / MILLISEC))
+ 
+#define NSEC2SEC(n)     ((n) / (NANOSEC / SEC))
+#define SEC2NSEC(m)     ((hrtime_t)(m) * (NANOSEC / SEC))
+ 
+#ifndef __defined_hr_t
+#define __defined_hr_t
+typedef longlong_t      hrtime_t;
+#endif
+
+#define SEC_TO_TICK(sec)        ((sec) * hz)
+#define NSEC_TO_TICK(nsec)      ((nsec) / (NANOSEC / hz))
+
+
 #define gethrestime_sec()       (time_second)
 #define gethrestime(ts)         getnanotime(ts)
 #define gethrtime_waitfree()    gethrtime()
@@ -288,7 +309,6 @@ static inline int64_t
 ddi_get_lbolt64(void)
 {
         struct timespec ts;
-        const int hz = 100;
 
         getnanouptime(&ts);
         return (int64_t)(SEC_TO_TICK(ts.tv_sec) + NSEC_TO_TICK(ts.tv_nsec));
