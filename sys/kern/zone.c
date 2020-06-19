@@ -3467,7 +3467,7 @@ zone_ncpus_get(zone_t *zone)
 {
 	int myncpus = zone == NULL ? 0 : zone->zone_ncpus;
 
-	return (myncpus != 0 ? myncpus : ncpus);
+	return (myncpus != 0 ? myncpus : ncpu);
 }
 
 /*
@@ -3480,7 +3480,7 @@ zone_ncpus_online_get(zone_t *zone)
 {
 	int myncpus_online = zone == NULL ? 0 : zone->zone_ncpus_online;
 
-	return (myncpus_online != 0 ? myncpus_online : ncpus_online);
+	return (myncpus_online != 0 ? myncpus_online : ncpuonline);
 }
 
 /*
