@@ -316,6 +316,8 @@ ddi_get_lbolt64(void)
   
 #define ddi_get_lbolt()         (clock_t)ddi_get_lbolt64()
 
+#define VERIFY(x) KDASSERT(x)
+
 //typedef if_index_t datalink_id_t;
 
 /*
