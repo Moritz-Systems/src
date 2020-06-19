@@ -281,7 +281,7 @@ gethrtime(void)
 }
 
 /*ARGSUSED*/
-void
+static void
 scalehrtime(hrtime_t *hrt)
 {
 }
@@ -3363,6 +3363,7 @@ zone_find_by_path(const char *path)
 	return (zret);
 }
 
+#ifdef notyet
 /*
  * Public interface for updating per-zone load averages.  Called once per
  * second.
@@ -3406,9 +3407,8 @@ zone_loadavg_update(void)
 #if 0
 		tmp = cpu_uarray_sum_all(zp->zone_ustate);
 		zone_total = UINT64_OVERFLOW_TO_INT64(tmp);
-#endif
-
 		scalehrtime(&zone_total);
+#endif
 
 		/* The zone_total should always be increasing. */
 		lavg->lg_loads[lavg->lg_cur] = (zone_total > lavg->lg_total) ?
@@ -3455,6 +3455,7 @@ zone_loadavg_update(void)
 	}
 	mutex_exit(&zonehash_lock);
 }
+#endif
 
 /*
  * Get the number of cpus visible to this zone.  The system-wide global
