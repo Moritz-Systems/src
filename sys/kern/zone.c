@@ -3369,7 +3369,9 @@ zone_loadavg_update(void)
 	zone_t *zp;
 	zone_status_t status;
 	struct loadavg *lavg;
+#if 0
 	hrtime_t zone_total;
+#endif
 	uint64_t tmp;
 	int i;
 	hrtime_t hr_avg;
@@ -3395,8 +3397,10 @@ zone_loadavg_update(void)
 		 */
 		lavg = &zp->zone_loadavg;
 
+#if 0
 		tmp = cpu_uarray_sum_all(zp->zone_ustate);
 		zone_total = UINT64_OVERFLOW_TO_INT64(tmp);
+#endif
 
 		scalehrtime(&zone_total);
 
