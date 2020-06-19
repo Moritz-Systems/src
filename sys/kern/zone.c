@@ -280,6 +280,22 @@ gethrtime(void)
 
 }
 
+#define gethrestime_sec()       (time_second)
+#define gethrestime(ts)         getnanotime(ts)
+#define gethrtime_waitfree()    gethrtime()
+
+static inline int64_t
+ddi_get_lbolt64(void)
+{
+        struct timespec ts;
+        const int hz = 100;
+
+        getnanouptime(&ts);
+        return (int64_t)(SEC_TO_TICK(ts.tv_sec) + NSEC_TO_TICK(ts.tv_nsec));
+}
+  
+#define ddi_get_lbolt()         (clock_t)ddi_get_lbolt64()
+
 //typedef if_index_t datalink_id_t;
 
 /*
