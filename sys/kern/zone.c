@@ -2640,6 +2640,7 @@ zone_set_brand(zone_t *zone, const char *brand)
 }
 #endif
 
+#if 0
 static int
 zone_set_secflags(zone_t *zone, const psecflags_t *zone_secflags)
 {
@@ -2665,6 +2666,7 @@ zone_set_secflags(zone_t *zone, const psecflags_t *zone_secflags)
 
 	return (0);
 }
+#endif
 
 static int
 zone_set_fs_allowed(zone_t *zone, const char *zone_fs_allowed)
