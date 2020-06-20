@@ -169,7 +169,7 @@
  *       list (a list of zones in the ZONE_IS_DEAD state).
  *
  *   Ordering requirements:
- *       pool_lock --> cpu_lock --> zonehash_lock --> zone_status_lock -->
+ *       xool_lock --> cpu_lock --> zonehash_lock --> zone_status_lock -->
  *       zone_lock --> zsd_key_lock --> pidlock --> p_lock
  *
  *   When taking zone_mem_lock or zone_nlwps_lock, the lock ordering is:
@@ -216,7 +216,7 @@
 #include <sys/vnode.h>
 #include <sys/time.h>
 #include <sys/callb.h>
-#include <sys/sol_pool.h>
+#include <sys/sol_xool.h>
 
 #define MUTEX_HELD(x)           (mutex_owned(x))
 #define MUTEX_NOT_HELD(x)       (!mutex_owned(x) || panicstr != NULL)
@@ -2404,8 +2404,8 @@ zone_init(void)
 	rctl_prealloc_destroy(gp);
 #endif
 	/*
-	 * pool_default hasn't been initialized yet, so we let pool_init()
-	 * take care of making sure the global zone is in the default pool.
+	 * xool_default hasn't been initialized yet, so we let xool_init()
+	 * take care of making sure the global zone is in the default xool.
 	 */
 
 #if 0
@@ -3462,7 +3462,7 @@ zone_loadavg_update(void)
 
 /*
  * Get the number of cpus visible to this zone.  The system-wide global
- * 'ncpus' is returned if pools are disabled, the caller is in the
+ * 'ncpus' is returned if xools are disabled, the caller is in the
  * global zone, or a NULL zone argument is passed in.
  */
 int
@@ -3475,7 +3475,7 @@ zone_ncpus_get(zone_t *zone)
 
 /*
  * Get the number of online cpus visible to this zone.  The system-wide
- * global 'ncpus_online' is returned if pools are disabled, the caller
+ * global 'ncpus_online' is returned if xools are disabled, the caller
  * is in the global zone, or a NULL zone argument is passed in.
  */
 int
@@ -3487,33 +3487,33 @@ zone_ncpus_online_get(zone_t *zone)
 }
 
 /*
- * Return the pool to which the zone is currently bound.
+ * Return the xool to which the zone is currently bound.
  */
-pool_t *
-zone_pool_get(zone_t *zone)
+xool_t *
+zone_xool_get(zone_t *zone)
 {
-	ASSERT(pool_lock_held());
+	ASSERT(xool_lock_held());
 
-	return (zone->zone_pool);
+	return (zone->zone_xool);
 }
 
 /*
- * Set the zone's pool pointer and update the zone's visibility to match
- * the resources in the new pool.
+ * Set the zone's xool pointer and update the zone's visibility to match
+ * the resources in the new xool.
  */
 void
-zone_pool_set(zone_t *zone, pool_t *pool)
+zone_xool_set(zone_t *zone, xool_t *xool)
 {
-	ASSERT(pool_lock_held());
+	ASSERT(xool_lock_held());
 	ASSERT(MUTEX_HELD(&cpu_lock));
 
-	zone->zone_pool = pool;
-	zone_pset_set(zone, pool->pool_pset->pset_id);
+	zone->zone_xool = xool;
+	zone_pset_set(zone, xool->xool_pset->pset_id);
 }
 
 /*
  * Return the cached value of the id of the processor set to which the
- * zone is currently bound.  The value will be ZONE_PS_INVAL if the pools
+ * zone is currently bound.  The value will be ZONE_PS_INVAL if the xools
  * facility is disabled.
  */
 psetid_t
@@ -3545,12 +3545,12 @@ zone_pset_set(zone_t *zone, psetid_t newpsetid)
 	if (zone != global_zone) {
 		zone->zone_psetid = newpsetid;
 		if (newpsetid != ZONE_PS_INVAL)
-			pool_pset_visibility_add(newpsetid, zone);
+			xool_pset_visibility_add(newpsetid, zone);
 		if (oldpsetid != ZONE_PS_INVAL)
-			pool_pset_visibility_remove(oldpsetid, zone);
+			xool_pset_visibility_remove(oldpsetid, zone);
 	}
 	/*
-	 * Disabling pools, so we should start using the global values
+	 * Disabling xools, so we should start using the global values
 	 * for ncpus and ncpus_online.
 	 */
 	if (newpsetid == ZONE_PS_INVAL) {
@@ -4202,28 +4202,28 @@ zsched(void *arg)
 	 *
 	 * At this point we want to set the zone status to ZONE_IS_INITIALIZED
 	 * and atomically set the zone's processor set visibility.  Once
-	 * we drop pool_lock() this zone will automatically get updated
-	 * to reflect any future changes to the pools configuration.
+	 * we drop xool_lock() this zone will automatically get updated
+	 * to reflect any future changes to the xools configuration.
 	 *
 	 * Note that after we drop the locks below (zonehash_lock in
 	 * particular) other operations such as a zone_getattr call can
 	 * now proceed and observe the zone. That is the reason for doing a
 	 * state transition to the INITIALIZED state.
 	 */
-	pool_lock();
+	xool_lock();
 	mutex_enter(&cpu_lock);
 	mutex_enter(&zonehash_lock);
 	zone_uniqid(zone);
 	zone_zsd_configure(zone);
-	if (pool_state == POOL_ENABLED)
-		zone_pset_set(zone, pool_default->pool_pset->pset_id);
+	if (xool_state == XOOL_ENABLED)
+		zone_pset_set(zone, xool_default->xool_pset->pset_id);
 	mutex_enter(&zone_status_lock);
 	ASSERT(zone_status_get(zone) == ZONE_IS_UNINITIALIZED);
 	zone_status_set(zone, ZONE_IS_INITIALIZED);
 	mutex_exit(&zone_status_lock);
 	mutex_exit(&zonehash_lock);
 	mutex_exit(&cpu_lock);
-	pool_unlock();
+	xool_unlock();
 
 	/* Now call the create callback for this key */
 	zsd_apply_all_keys(zsd_apply_create, zone);
@@ -4245,23 +4245,23 @@ zsched(void *arg)
 
 		/*
 		 * Ok, this is a little complicated.  We need to grab the
-		 * zone's pool's scheduling class ID; note that by now, we
-		 * are already bound to a pool if we need to be (zoneadmd
+		 * zone's xool's scheduling class ID; note that by now, we
+		 * are already bound to a xool if we need to be (zoneadmd
 		 * will have done that to us while we're in the READY
 		 * state).  *But* the scheduling class for the zone's 'init'
 		 * must be explicitly passed to newproc, which doesn't
-		 * respect pool bindings.
+		 * respect xool bindings.
 		 *
-		 * We hold the pool_lock across the call to newproc() to
-		 * close the obvious race: the pool's scheduling class
+		 * We hold the xool_lock across the call to newproc() to
+		 * close the obvious race: the xool's scheduling class
 		 * could change before we manage to create the LWP with
 		 * classid 'cid'.
 		 */
-		pool_lock();
+		xool_lock();
 		if (zone->zone_defaultcid > 0)
 			cid = zone->zone_defaultcid;
 		else
-			cid = pool_get_class(zone->zone_pool);
+			cid = xool_get_class(zone->zone_xool);
 		if (cid == -1)
 			cid = defaultcid;
 
@@ -4279,7 +4279,7 @@ zsched(void *arg)
 			zone->zone_boot_time = gethrestime_sec();
 		}
 
-		pool_unlock();
+		xool_unlock();
 	}
 
 	/*
@@ -4646,8 +4646,8 @@ zone_create(const char *zone_name, const char *zone_root,
 	zone = kmem_zalloc(sizeof (zone_t), KM_SLEEP);
 	zone->zone_id = zoneid;
 	zone->zone_status = ZONE_IS_UNINITIALIZED;
-	zone->zone_pool = pool_default;
-	zone->zone_pool_mod = gethrtime();
+	zone->zone_xool = xool_default;
+	zone->zone_xool_mod = gethrtime();
 	zone->zone_psetid = ZONE_PS_INVAL;
 	zone->zone_ncpus = 0;
 	zone->zone_ncpus_online = 0;
@@ -5191,9 +5191,9 @@ zone_shutdown(zoneid_t zoneid)
 	}
 	/*
 	 * After the zone status goes to ZONE_IS_DOWN this zone will no
-	 * longer be notified of changes to the pools configuration, so
-	 * in order to not end up with a stale pool pointer, we point
-	 * ourselves at the default pool and remove all resource
+	 * longer be notified of changes to the xools configuration, so
+	 * in order to not end up with a stale xool pointer, we point
+	 * ourselves at the default xool and remove all resource
 	 * visibility.  This is especially important as the zone_t may
 	 * languish on the deathrow for a very long time waiting for
 	 * cred's to drain out.
@@ -5202,20 +5202,20 @@ zone_shutdown(zoneid_t zoneid)
 	 * (presumably due to interrupted or parallel systemcalls)
 	 * without any adverse effects.
 	 */
-	if (pool_lock_intr() != 0) {
+	if (xool_lock_intr() != 0) {
 		zone_rele(zone);
 		return (set_errno(EINTR));
 	}
-	if (pool_state == POOL_ENABLED) {
+	if (xool_state == XOOL_ENABLED) {
 		mutex_enter(&cpu_lock);
-		zone_pool_set(zone, pool_default);
+		zone_xool_set(zone, xool_default);
 		/*
 		 * The zone no longer needs to be able to see any cpus.
 		 */
 		zone_pset_set(zone, ZONE_PS_INVAL);
 		mutex_exit(&cpu_lock);
 	}
-	pool_unlock();
+	xool_unlock();
 
 	/*
 	 * ZSD shutdown callbacks can be executed multiple times, hence
@@ -5701,22 +5701,22 @@ zone_getattr(zoneid_t zoneid, int attr, void *buf, size_t bufsize)
 		    copyout(&zone->zone_uniqid, buf, bufsize) != 0)
 			error = EFAULT;
 		break;
-	case ZONE_ATTR_POOLID:
+	case ZONE_ATTR_XOOLID:
 		{
-			pool_t *pool;
-			poolid_t poolid;
+			xool_t *xool;
+			xoolid_t xoolid;
 
-			if (pool_lock_intr() != 0) {
+			if (xool_lock_intr() != 0) {
 				error = EINTR;
 				break;
 			}
-			pool = zone_pool_get(zone);
-			poolid = pool->pool_id;
-			pool_unlock();
-			size = sizeof (poolid);
+			xool = zone_xool_get(zone);
+			xoolid = xool->xool_id;
+			xool_unlock();
+			size = sizeof (xoolid);
 			if (bufsize > size)
 				bufsize = size;
-			if (buf != NULL && copyout(&poolid, buf, size) != 0)
+			if (buf != NULL && copyout(&xoolid, buf, size) != 0)
 				error = EFAULT;
 		}
 		break;
@@ -6041,7 +6041,7 @@ as_swresv(void)
  *
  * The current process is injected into said zone.  In the process
  * it will change its project membership, privileges, rootdir/cwd,
- * zone-wide rctls, and pool association to match those of the zone.
+ * zone-wide rctls, and xool association to match those of the zone.
  *
  * The first zone_enter() called while the zone is in the ZONE_IS_READY
  * state will transition it to ZONE_IS_RUNNING.  Processes may only
@@ -6058,7 +6058,7 @@ zone_enter(zoneid_t zoneid)
 	task_t *tk, *oldtk;
 	kproject_t *zone_proj0;
 	cred_t *cr, *newcr;
-	pool_t *oldpool, *newpool;
+	xool_t *oldxool, *newxool;
 	sess_t *sp;
 	uid_t uid;
 	zone_status_t status;
@@ -6172,32 +6172,32 @@ zone_enter(zoneid_t zoneid)
 	}
 	/*
 	 * We want to momentarily drop zonehash_lock while we optimistically
-	 * bind curproc to the pool it should be running in.  This is safe
+	 * bind curproc to the xool it should be running in.  This is safe
 	 * since the zone can't disappear (we have a hold on it).
 	 */
 	zone_hold(zone);
 	mutex_exit(&zonehash_lock);
 
 	/*
-	 * Grab pool_lock to keep the pools configuration from changing
-	 * and to stop ourselves from getting rebound to another pool
+	 * Grab xool_lock to keep the xools configuration from changing
+	 * and to stop ourselves from getting rebound to another xool
 	 * until we join the zone.
 	 */
-	if (pool_lock_intr() != 0) {
+	if (xool_lock_intr() != 0) {
 		zone_rele(zone);
 		err = EINTR;
 		goto out;
 	}
-	ASSERT(secpolicy_pool(CRED()) == 0);
+	ASSERT(secpolicy_xool(CRED()) == 0);
 	/*
-	 * Bind ourselves to the pool currently associated with the zone.
+	 * Bind ourselves to the xool currently associated with the zone.
 	 */
-	oldpool = curproc->p_pool;
-	newpool = zone_pool_get(zone);
-	if (pool_state == POOL_ENABLED && newpool != oldpool &&
-	    (err = pool_do_bind(newpool, P_PID, P_MYID,
-	    POOL_BIND_ALL)) != 0) {
-		pool_unlock();
+	oldxool = curproc->p_xool;
+	newxool = zone_xool_get(zone);
+	if (xool_state == XOOL_ENABLED && newxool != oldxool &&
+	    (err = xool_do_bind(newxool, P_PID, P_MYID,
+	    XOOL_BIND_ALL)) != 0) {
+		xool_unlock();
 		zone_rele(zone);
 		goto out;
 	}
@@ -6217,11 +6217,11 @@ zone_enter(zoneid_t zoneid)
 		 */
 		mutex_exit(&zonehash_lock);
 		mutex_exit(&cpu_lock);
-		if (pool_state == POOL_ENABLED &&
-		    newpool != oldpool)
-			(void) pool_do_bind(oldpool, P_PID, P_MYID,
-			    POOL_BIND_ALL);
-		pool_unlock();
+		if (xool_state == XOOL_ENABLED &&
+		    newxool != oldxool)
+			(void) xool_do_bind(oldxool, P_PID, P_MYID,
+			    XOOL_BIND_ALL);
+		xool_unlock();
 		zone_rele(zone);
 		err = EINVAL;
 		goto out;
@@ -6397,9 +6397,9 @@ zone_enter(zoneid_t zoneid)
 
 	mutex_exit(&zonehash_lock);
 	/*
-	 * We're firmly in the zone; let pools progress.
+	 * We're firmly in the zone; let xools progress.
 	 */
-	pool_unlock();
+	xool_unlock();
 	task_rele(oldtk);
 	/*
 	 * We don't need to retain a hold on the zone since we already
@@ -6949,7 +6949,7 @@ zone_dataset_visible(const char *dataset, int *write)
 	 * Walk the list a second time, searching for datasets which are parents
 	 * of exported datasets.  These should be visible, but read-only.
 	 *
-	 * Note that we also have to support forms such as 'pool/dataset/', with
+	 * Note that we also have to support forms such as 'xool/dataset/', with
 	 * a trailing slash.
 	 */
 	for (zd = list_head(&zone->zone_datasets); zd != NULL;
