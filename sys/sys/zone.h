@@ -63,7 +63,7 @@ extern "C" {
 #define ZONE_ATTR_STATUS        3
 #define ZONE_ATTR_PRIVSET       4
 #define ZONE_ATTR_UNIQID        5
-#define ZONE_ATTR_POOLID        6
+#define ZONE_ATTR_XOOLID        6
 #define ZONE_ATTR_INITPID       7
 #define ZONE_ATTR_SLBL          8
 #define ZONE_ATTR_INITNAME      9
@@ -286,7 +286,7 @@ typedef struct zone_net_data {
 #define	ZONE_USTATE_WTIME (2)
 #define	ZONE_USTATE_MAX (3)
 
-struct pool;
+struct xool;
 struct brand;
 
 /*
@@ -485,10 +485,10 @@ typedef struct zone {
 	uint64_t	zone_uniqid;	/* unique zone generation number */
 	kauth_cred_t zone_kcred;	/* kcred-like, zone-limited cred */
 	/*
-	 * zone_pool is protected by pool_lock().
+	 * zone_xool is protected by xool_lock().
 	 */
-	struct pool	*zone_pool;	/* pool the zone is bound to */
-	hrtime_t	zone_pool_mod;	/* last pool bind modification time */
+	struct xool	*zone_xool;	/* xool the zone is bound to */
+	hrtime_t	zone_xool_mod;	/* last xool bind modification time */
 	/* zone_psetid is protected by cpu_lock */
 	psetid_t	zone_psetid;	/* pset the zone is bound to */
 
@@ -610,7 +610,7 @@ typedef struct zone {
 
 
 /*
- * Special value of zone_psetid to indicate that pools are disabled.
+ * Special value of zone_psetid to indicate that xools are disabled.
  */
 #define	ZONE_PS_INVAL	PS_MYID
 
@@ -822,10 +822,10 @@ extern uint32_t zone_get_hostid(zone_t *);
 extern kauth_cred_t zone_get_kcred(zoneid_t);
 
 /*
- * Get/set the pool the zone is currently bound to.
+ * Get/set the xool the zone is currently bound to.
  */
-extern struct pool *zone_pool_get(zone_t *);
-extern void zone_pool_set(zone_t *, struct pool *);
+extern struct xool *zone_xool_get(zone_t *);
+extern void zone_xool_set(zone_t *, struct xool *);
 
 /*
  * Get/set the pset the zone is currently using.
@@ -840,7 +840,7 @@ extern int zone_ncpus_get(zone_t *);
 extern int zone_ncpus_online_get(zone_t *);
 
 /*
- * Returns true if the named pool/dataset is visible in the current zone.
+ * Returns true if the named xool/dataset is visible in the current zone.
  */
 extern int zone_dataset_visible(const char *, int *);
 
