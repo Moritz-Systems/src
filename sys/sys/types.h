@@ -170,7 +170,7 @@ typedef id_t		zoneid_t;
 typedef unsigned short	datalink_id_t; /* if_index_t */
 #define B_FALSE		0
 #define B_TRUE		1
-typedef id_t            poolid_t;
+typedef id_t            xoolid_t;
 
 typedef unsigned char   uchar_t;
 typedef unsigned short  ushort_t;
