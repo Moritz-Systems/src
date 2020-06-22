@@ -27,8 +27,6 @@
 #ifndef	_SYS_XOOL_PSET_H
 #define	_SYS_XOOL_PSET_H
 
-#pragma ident	"%Z%%M%	%I%	%E% SMI"
-
 #include <sys/types.h>
 //#include <sys/cpupart.h>
 #include <sys/idtype.h>
