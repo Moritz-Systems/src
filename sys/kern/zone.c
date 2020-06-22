@@ -217,7 +217,7 @@
 #include <sys/time.h>
 #include <sys/callb.h>
 #include <sys/xool.h>
-#include <sys/xool_pset.h>
+//#include <sys/xool_pset.h>
 #include <sys/cpu.h>
 
 #define MUTEX_HELD(x)           (mutex_owned(x))
@@ -3499,6 +3499,7 @@ zone_xool_get(zone_t *zone)
 	return (zone->zone_xool);
 }
 
+#if 0
 /*
  * Set the zone's xool pointer and update the zone's visibility to match
  * the resources in the new xool.
@@ -3525,6 +3526,7 @@ zone_pset_get(zone_t *zone)
 
 	return (zone->zone_psetid);
 }
+#endif
 
 /*
  * Set the cached value of the id of the processor set to which the zone
