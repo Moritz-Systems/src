@@ -24,8 +24,8 @@
  * Use is subject to license terms.
  */
 
-#ifndef	_SYS_POOL_PSET_H
-#define	_SYS_POOL_PSET_H
+#ifndef	_SYS_XOOL_PSET_H
+#define	_SYS_XOOL_PSET_H
 
 #pragma ident	"%Z%%M%	%I%	%E% SMI"
 
@@ -45,41 +45,41 @@ extern "C" {
 
 struct zone;
 
-typedef struct pool_pset {
+typedef struct xool_pset {
 	psetid_t		pset_id;	/* pset ID */
-	uint_t			pset_npools;	/* # of pools we belong to */
+	uint_t			pset_nxools;	/* # of xools we belong to */
 	list_node_t		pset_link;	/* link to next/prev pset */
 	nvlist_t		*pset_props;	/* pset properties */
-} pool_pset_t;
+} xool_pset_t;
 
-extern pool_pset_t *pool_pset_default;		/* default pset */
-extern hrtime_t pool_pset_mod;			/* pset modification time */
-extern hrtime_t pool_cpu_mod;			/* cpu modification time */
+extern xool_pset_t *xool_pset_default;		/* default pset */
+extern hrtime_t xool_pset_mod;			/* pset modification time */
+extern hrtime_t xool_cpu_mod;			/* cpu modification time */
 
-extern void pool_pset_init(void);
-extern int pool_pset_enable(void);
-extern int pool_pset_disable(void);
-extern int pool_pset_create(psetid_t *);
-extern int pool_pset_destroy(psetid_t);
-extern int pool_pset_assoc(poolid_t, psetid_t);
-extern void pool_pset_bind(proc_t *, psetid_t, void *, void *);
-extern int pool_pset_xtransfer(id_t, id_t, size_t, id_t *);
-extern int pool_pset_proprm(psetid_t, char *);
-extern int pool_pset_propput(psetid_t, nvpair_t *);
-extern int pool_pset_propget(psetid_t, char *, nvlist_t *);
-extern int pool_cpu_proprm(processorid_t, char *);
-extern int pool_cpu_propput(processorid_t, nvpair_t *);
-extern int pool_cpu_propget(processorid_t, char *, nvlist_t *);
-extern int pool_pset_pack(ea_object_t *);
+extern void xool_pset_init(void);
+extern int xool_pset_enable(void);
+extern int xool_pset_disable(void);
+extern int xool_pset_create(psetid_t *);
+extern int xool_pset_destroy(psetid_t);
+extern int xool_pset_assoc(xoolid_t, psetid_t);
+extern void xool_pset_bind(proc_t *, psetid_t, void *, void *);
+extern int xool_pset_xtransfer(id_t, id_t, size_t, id_t *);
+extern int xool_pset_proprm(psetid_t, char *);
+extern int xool_pset_propput(psetid_t, nvpair_t *);
+extern int xool_pset_propget(psetid_t, char *, nvlist_t *);
+extern int xool_cpu_proprm(processorid_t, char *);
+extern int xool_cpu_propput(processorid_t, nvpair_t *);
+extern int xool_cpu_propget(processorid_t, char *, nvlist_t *);
+extern int xool_pset_pack(ea_object_t *);
 
-extern int pset_bind_start(struct proc **, struct pool *);
-extern void pset_bind_abort(struct proc **, struct pool *);
+extern int pset_bind_start(struct proc **, struct xool *);
+extern void pset_bind_abort(struct proc **, struct xool *);
 extern void pset_bind_finish(void);
 
-extern boolean_t pool_pset_enabled(void);
+extern boolean_t xool_pset_enabled(void);
 
-extern void pool_pset_visibility_add(psetid_t, struct zone *);
-extern void pool_pset_visibility_remove(psetid_t, struct zone *);
+extern void xool_pset_visibility_add(psetid_t, struct zone *);
+extern void xool_pset_visibility_remove(psetid_t, struct zone *);
 
 #endif	/* _KERNEL */
 
@@ -87,4 +87,4 @@ extern void pool_pset_visibility_remove(psetid_t, struct zone *);
 }
 #endif
 
-#endif	/* _SYS_POOL_PSET_H */
+#endif	/* _SYS_XOOL_PSET_H */
