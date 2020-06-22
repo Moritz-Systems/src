@@ -41,7 +41,7 @@
 extern "C" {
 #endif
 
-#include <sys/feature_tests.h>
+//#include <sys/feature_tests.h>
 #if defined(__GNUC__) && defined(_ASM_INLINES) && \
 	(defined(__i386) || defined(__amd64))
 #include <asm/bitmap.h>

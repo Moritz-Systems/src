@@ -166,6 +166,7 @@ typedef	uint32_t	id_t;		/* group id, process id or user id */
 typedef	uint64_t	ino_t;		/* inode number */
 typedef	long		key_t;		/* IPC key (for Sys V IPC) */
 
+typedef short index_t;
 typedef id_t		zoneid_t;
 typedef unsigned short	datalink_id_t; /* if_index_t */
 #define B_FALSE		0
