@@ -28,7 +28,7 @@
 
 #include <sys/types.h>
 #include <sys/bitmap.h>
-#include <sys/sysmacros.h>
+//#include <sys/sysmacros.h>
 
 #ifdef	__cplusplus
 extern "C" {
