@@ -30,10 +30,11 @@
 #pragma ident	"%Z%%M%	%I%	%E% SMI"
 
 #include <sys/types.h>
-#include <sys/cpupart.h>
-#include <sys/procset.h>
+//#include <sys/cpupart.h>
+#include <sys/idtype.h>
 #include <sys/nvpair.h>
-#include <sys/exacct.h>
+//#include <sys/exacct.h>
+#include <sys/processor.h>
 #include <sys/time.h>
 #include <sys/list.h>
 
