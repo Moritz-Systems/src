@@ -27,9 +27,9 @@
 #define	_SYS_EXACCT_H
 
 #include <sys/types.h>
-#include <sys/task.h>
+//#include <sys/task.h>
 #include <sys/proc.h>
-#include <sys/procset.h>
+#include <sys/idtype.h>
 
 #ifdef _KERNEL
 #include <sys/acctctl.h>
