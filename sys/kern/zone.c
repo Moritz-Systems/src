@@ -217,6 +217,7 @@
 #include <sys/time.h>
 #include <sys/callb.h>
 #include <sys/xool.h>
+#include <sys/xool_pset.h>
 #include <sys/cpu.h>
 
 #define MUTEX_HELD(x)           (mutex_owned(x))
