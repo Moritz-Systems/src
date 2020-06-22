@@ -3528,6 +3528,7 @@ zone_pset_get(zone_t *zone)
 }
 #endif
 
+#if 0
 /*
  * Set the cached value of the id of the processor set to which the zone
  * is currently bound.  Also update the zone's visibility to match the
@@ -3562,6 +3563,7 @@ zone_pset_set(zone_t *zone, psetid_t newpsetid)
 		zone->zone_ncpus_online = 0;
 	}
 }
+#endif
 
 /*
  * Walk the list of active zones and issue the provided callback for
