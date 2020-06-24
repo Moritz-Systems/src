@@ -3928,7 +3928,7 @@ kthread_t *
 zthread_create(
     caddr_t stk,
     size_t stksize,
-    void (*proc)(),
+    void (*proc)(void),
     void *arg,
     size_t len,
     pri_t pri)
