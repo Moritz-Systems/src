@@ -44,9 +44,12 @@ typedef struct pathname {
 	size_t	pn_bufsize;		/* total size of pn_buf */
 } pathname_t;
 
-enum symfollow { NO_FOLLOW = NOFOLLOW };
+#ifndef XXX_CRED_T
+#define XXX_CRED_T
+typedef kauth_cred_t cred_t;
+#endif
 
-int lookupname(char *, enum uio_seg, enum symfollow, vnode_t **, vnode_t **);
+enum symfollow { NO_FOLLOW = NOFOLLOW };
 
 #define pn_pathleft(pnp)        ((pnp)->pn_pathlen)
 
