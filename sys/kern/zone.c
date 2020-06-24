@@ -3853,6 +3853,7 @@ out:
 	return (error);
 }
 
+#undef isalnum
 #define	isalnum(c)	(((c) >= '0' && (c) <= '9') || \
 			((c) >= 'a' && (c) <= 'z') || \
 			((c) >= 'A' && (c) <= 'Z'))
