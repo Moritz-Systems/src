@@ -219,6 +219,7 @@
 #include <sys/xool.h>
 //#include <sys/xool_pset.h>
 #include <sys/cpu.h>
+#include <sys/pathname.h>
 
 #define MUTEX_HELD(x)           (mutex_owned(x))
 #define MUTEX_NOT_HELD(x)       (!mutex_owned(x) || panicstr != NULL)
