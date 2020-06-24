@@ -3924,7 +3924,7 @@ zone_get_hostid(zone_t *zonep)
  * zone's zsched process (curproc->p_zone->zone_zsched) before returning.
  */
 /*ARGSUSED*/
-kthread_t *
+struct lwp *
 zthread_create(
     caddr_t stk,
     size_t stksize,
