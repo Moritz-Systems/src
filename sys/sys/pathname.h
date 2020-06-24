@@ -48,6 +48,45 @@ enum symfollow { NO_FOLLOW = NOFOLLOW };
 
 int lookupname(char *, enum uio_seg, enum symfollow, vnode_t **, vnode_t **);
 
+#define pn_pathleft(pnp)        ((pnp)->pn_pathlen)
+
+extern void     pn_alloc(struct pathname *);
+extern void     pn_alloc_sz(struct pathname *, size_t);
+extern int      pn_get(char *, enum uio_seg, struct pathname *);
+extern int      pn_get_buf(char *, enum uio_seg, struct pathname *,
+                        void *, size_t);
+extern int      pn_set(struct pathname *, char *);                                                                                                
+extern int      pn_insert(struct pathname *, struct pathname *, size_t);
+extern int      pn_getsymlink(vnode_t *, struct pathname *, cred_t *);
+extern int      pn_getcomponent(struct pathname *, char *);
+extern void     pn_setlast(struct pathname *);
+extern void     pn_skipslash(struct pathname *);
+extern int      pn_fixslash(struct pathname *);
+extern int      pn_addslash(struct pathname *);
+extern void     pn_free(struct pathname *);
+
+extern int lookupname(char *, enum uio_seg, int follow,
+                vnode_t **, vnode_t **);
+extern int lookupnameat(char *, enum uio_seg, int follow,
+                vnode_t **, vnode_t **, vnode_t *);
+extern int lookupnameatcred(char *, enum uio_seg, int follow,
+                vnode_t **, vnode_t **, vnode_t *, cred_t *);
+extern int lookuppn(struct pathname *, struct pathname *, int follow,
+                vnode_t **, vnode_t **);                                                                                                          
+extern int lookuppnat(struct pathname *, struct pathname *, int follow,
+                vnode_t **, vnode_t **, vnode_t *);
+extern int lookuppnatcred(struct pathname *, struct pathname *, int follow,
+                vnode_t **, vnode_t **, vnode_t *, cred_t *);
+
+extern int lookuppnvp(struct pathname *, struct pathname *, int follow,
+                vnode_t **, vnode_t **, vnode_t *, vnode_t *, cred_t *);
+extern int traverse(vnode_t **);
+
+extern int vnodetopath(vnode_t *, vnode_t *, char *, size_t, cred_t *);
+extern int dogetcwd(char *, size_t);
+extern int dirfindvp(vnode_t *, vnode_t *, vnode_t *, cred_t *, char *,
+                size_t, dirent64_t **);
+
 #endif	/* _KERNEL */
 
 #endif	/* _OPENSOLARIS_SYS_PATHNAME_H_ */
