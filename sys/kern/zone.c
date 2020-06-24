@@ -233,6 +233,7 @@
 #include <sys/proc.h>
 #include <sys/filedesc.h>
 #include <sys/buf.h>
+#include <sys/kthread.h>
 
 #include <sys/vfs_syscalls.h>
 
@@ -3933,7 +3934,7 @@ zthread_create(
     size_t len,
     pri_t pri)
 {
-	kthread_t *t;
+	struct lwp *t;
 	zone_t *zone = curproc->p_zone;
 	proc_t *pp = zone->zone_zsched;
 
@@ -3950,7 +3951,7 @@ zthread_create(
 	 * Create a thread, but don't let it run until we've finished setting
 	 * things up.
 	 */
-	t = thread_create(stk, stksize, proc, arg, len, pp, TS_STOPPED, pri);
+	t = kthread_create(stk, stksize, proc, arg, len, pp, TS_STOPPED, pri);
 	ASSERT(t->t_forw == NULL);
 	mutex_enter(&zone_status_lock);
 	if (zone->zone_kthreads == NULL) {
