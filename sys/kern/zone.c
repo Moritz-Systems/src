@@ -418,6 +418,106 @@ int     vn_is_readonly(vnode_t *);
 #define STATE_CHANGED           (AT_CTIME)
 #define CONTENT_MODIFIED        (AT_MTIME | AT_CTIME)
 
+#define     HW_INVALID_HOSTID       0xFFFFFFFF      /* an invalid hostid */
+
+/*
+ * We should have a kernel version of ctype.h.
+ */
+#define isalnum(ch)     (isalpha(ch) || isdigit(ch))
+#define isalpha(ch)     (isupper(ch) || islower(ch))
+#define isdigit(ch)     ((ch) >= '0' && (ch) <= '9')
+#define islower(ch)     ((ch) >= 'a' && (ch) <= 'z')
+#define isspace(ch)     (((ch) == ' ') || ((ch) == '\r') || ((ch) == '\n') || \
+                        ((ch) == '\t') || ((ch) == '\f')) 
+#define isupper(ch)     ((ch) >= 'A' && (ch) <= 'Z')
+#define isxdigit(ch)    (isdigit(ch) || ((ch) >= 'a' && (ch) <= 'f') || \
+                        ((ch) >= 'A' && (ch) <= 'F')) 
+
+#define DIGIT(x)        \
+        (isdigit(x) ? (x) - '0' : islower(x) ? (x) + 10 - 'a' : (x) + 10 - 'A')
+                
+#define MBASE   ('z' - 'a' + 1 + 10)
+
+/*
+ * The following macro is a local version of isalnum() which limits
+ * alphabetic characters to the ranges a-z and A-Z; locale dependent
+ * characters will not return 1. The members of a-z and A-Z are
+ * assumed to be in ascending order and contiguous  
+ */
+#define lisalnum(x)     \
+        (isdigit(x) || ((x) >= 'a' && (x) <= 'z') || ((x) >= 'A' && (x) <= 'Z'))
+
+static int
+ddi_strtoul(const char *str, char **nptr, int base, unsigned long *result)
+{
+        unsigned long val;
+        int c;
+        int xx;
+        unsigned long   multmax;
+        int neg = 0;
+        const char **ptr = (const char **)(void *)nptr;
+        const unsigned char     *ustr = (const unsigned char *)str;
+ 
+        if (ptr != (const char **)0)
+                *ptr = __UNCONST(ustr); /* in case no number is formed */
+        if (base < 0 || base > MBASE || base == 1) {
+                /* base is invalid -- should be a fatal error */
+                return (EINVAL);
+        }
+        if (!isalnum(c = *ustr)) {
+                while (isspace(c))
+                        c = *++ustr;
+                switch (c) {
+                case '-':
+                        neg++;
+                        /* FALLTHROUGH */                                                                                                         
+                case '+':
+                        c = *++ustr;
+                }
+        }
+        if (base == 0) {
+                if (c != '0')
+                        base = 10;
+                else if (ustr[1] == 'x' || ustr[1] == 'X')                                                                                        
+                        base = 16;
+                else
+                        base = 8;
+	}
+        /*
+         * for any base > 10, the digits incrementally following
+         *      9 are assumed to be "abc...z" or "ABC...Z"
+         */
+        if (!lisalnum(c) || (xx = DIGIT(c)) >= base)                                                                                              
+                return (EINVAL); /* no number formed */
+        if (base == 16 && c == '0' && (ustr[1] == 'x' || ustr[1] == 'X') &&
+            isxdigit(ustr[2]))
+                c = *(ustr += 2); /* skip over leading "0x" or "0X" */
+
+        multmax = ULONG_MAX / (unsigned long)base;
+        val = DIGIT(c);
+        for (c = *++ustr; lisalnum(c) && (xx = DIGIT(c)) < base; ) {                                                                              
+                if (val > multmax)
+                        goto overflow;
+                val *= base;
+                if (ULONG_MAX - val < xx)
+                        goto overflow;
+                val += xx;
+                c = *++ustr;
+        }                                                                                                                                         
+        if (ptr != (const char **)0)
+                *ptr = __UNCONST(ustr);
+        *result = neg ? -val : val;
+        return (0);
+
+overflow:
+        for (c = *++ustr; lisalnum(c) && (xx = DIGIT(c)) < base; (c = *++ustr))
+                ;                                                                                                                                 
+        if (ptr != (const char **)0)
+                *ptr = __UNCONST(ustr);
+        return (ERANGE);
+}
+
+
 /*
  * This constant specifies the number of seconds that threads waiting for
  * subsystems to release a zone's general-purpose references will wait before
