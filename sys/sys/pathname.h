@@ -35,6 +35,7 @@
 
 #include <sys/param.h>
 #include <sys/vnode.h>
+#include <sys/namei.h>
 
 typedef struct pathname {
 	char	*pn_buf;		/* underlying storage */
@@ -43,7 +44,7 @@ typedef struct pathname {
 	size_t	pn_bufsize;		/* total size of pn_buf */
 } pathname_t;
 
-#define	NO_FOLLOW	NOFOLLOW
+enum symfollow { NO_FOLLOW = NOFOLLOW };
 
 int lookupname(char *, enum uio_seg, enum symfollow, vnode_t **, vnode_t **);
 
