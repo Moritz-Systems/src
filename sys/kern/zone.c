@@ -229,6 +229,12 @@
 #include <sys/fcntl.h>
 #include <sys/lockf.h>
 #include <sys/extattr.h>
+#include <sys/fcntl.h>
+#include <sys/proc.h>
+#include <sys/filedesc.h>
+#include <sys/buf.h>
+
+#include <sys/vfs_syscalls.h>
 
 #define MUTEX_HELD(x)           (mutex_owned(x))
 #define MUTEX_NOT_HELD(x)       (!mutex_owned(x) || panicstr != NULL)
@@ -345,6 +351,72 @@ ddi_get_lbolt64(void)
 #define VERIFY(x) KDASSERT(x)
 
 //typedef if_index_t datalink_id_t;
+
+typedef int (**vnodeops_t)(void *);
+
+#define vop_fid         vop_vptofh
+#define vop_fid_args    vop_vptofh_args
+#define a_fid           a_fhp
+
+#define v_count         v_usecount
+#define v_object        v_uobj
+
+struct vop_vptofh_args {
+        struct vnode *a_vp;
+        struct fid *a_fid;
+};
+
+#define IS_XATTRDIR(vp) (0)
+
+#define v_lock v_interlock
+
+#define SAVENAME 0
+
+int     vn_is_readonly(vnode_t *);
+
+#define vn_vfswlock(vp)         (0)
+#define vn_vfsunlock(vp)        do { } while (0)
+#define vn_ismntpt(vp)          ((vp)->v_type == VDIR && (vp)->v_mountedhere != NULL)
+#define vn_mountedvfs(vp)       ((vp)->v_mountedhere)
+#define vn_has_cached_data(vp)  ((vp)->v_uobj.uo_npages != 0)
+#define vn_exists(vp)           do { } while (0
+#define vn_invalid(vp)          do { } while (0)                                                                                                  
+#define vn_free(vp)             do { } while (0)
+#define vn_renamepath(tdvp, svp, tnm, lentnm)   do { } while (0)
+#define vn_matchops(vp, vops)   ((vp)->v_op == &(vops))
+
+#define vnevent_create(vp, ct)                  do { } while (0)
+#define vnevent_link(vp, ct)                    do { } while (0)
+#define vnevent_remove(vp, dvp, name, ct)       do { } while (0)
+#define vnevent_rmdir(vp, dvp, name, ct)        do { } while (0)                                                                                  
+#define vnevent_rename_src(vp, dvp, name, ct)   do { } while (0)
+#define vnevent_rename_dest(vp, dvp, name, ct)  do { } while (0)
+#define vnevent_rename_dest_dir(vp, ct)         do { } while (0)
+
+#define specvp(vp, rdev, type, cr)      (VN_HOLD(vp), (vp))
+#define MANDMODE(mode)  (0)
+#define MANDLOCK(vp, mode)      (0)
+#define chklock(vp, op, offset, size, mode, ct) (0)                                                                                               
+#define cleanlocks(vp, pid, foo)        do { } while (0)
+#define cleanshares(vp, pid)            do { } while (0)
+
+/*
+ * We will use va_spare is place of Solaris' va_mask.
+ * This field is initialized in zfs_setattr().
+ */
+#define va_mask         va_spare                                                                                                                  
+/* TODO: va_fileid is shorter than va_nodeid !!! */
+#define va_nodeid       va_fileid
+/* TODO: This field needs conversion! */
+#define va_nblocks      va_bytes
+#define va_blksize      va_blocksize
+#define va_seq          va_gen
+
+#define EXCL            0
+
+#define ACCESSED                (AT_ATIME)
+#define STATE_CHANGED           (AT_CTIME)
+#define CONTENT_MODIFIED        (AT_MTIME | AT_CTIME)
 
 /*
  * This constant specifies the number of seconds that threads waiting for
@@ -3646,7 +3718,7 @@ zone_set_root(zone_t *zone, const char *upath)
 			 * Get the new 'vp' if so.
 			 */
 			if ((error =
-			    VOP_ACCESS(vp, VEXEC, 0, CRED(), NULL)) == 0 &&
+			    VOP_ACCESS(vp, VEXEC, CRED())) == 0 &&
 			    (!vn_ismntpt(vp) ||
 			    (error = traverse(&vp)) == 0)) {
 				pathlen = pn.pn_pathlen + 2;
