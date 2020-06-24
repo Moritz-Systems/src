@@ -230,6 +230,8 @@
 typedef kauth_cred_t cred_t;
 #endif
 
+#define       NULLVPP         ((struct vnode **)0)
+
 #define VN_HOLD(v)      vref(v)
 #define VN_RELE(v)                                                    \
 do {                                                                  \
