@@ -236,6 +236,8 @@
 
 #include <sys/vfs_syscalls.h>
 
+char hw_serial[11] = "0";
+
 #define MUTEX_HELD(x)           (mutex_owned(x))
 #define MUTEX_NOT_HELD(x)       (!mutex_owned(x) || panicstr != NULL)
 #define mutex_init(a, b, c, d)  mutex_init(a, MUTEX_DEFAULT, IPL_NONE)
