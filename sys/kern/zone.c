@@ -3615,7 +3615,7 @@ zone_set_root(zone_t *zone, const char *upath)
 	struct pathname upn, pn;
 	size_t pathlen;
 
-	if ((error = pn_get((char *)upath, UIO_USERSPACE, &upn)) != 0)
+	if ((error = pn_get(__UNCONST(upath), UIO_USERSPACE, &upn)) != 0)
 		return (error);
 
 	pn_alloc(&pn);
