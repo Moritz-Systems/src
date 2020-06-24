@@ -49,6 +49,11 @@ typedef struct pathname {
 typedef kauth_cred_t cred_t;
 #endif
 
+#ifndef XXX_DIRENT_T
+#define XXX_DIRENT_T
+typedef struct dirent   dirent64_t;
+#endif
+
 enum symfollow { NO_FOLLOW = NOFOLLOW };
 
 #define pn_pathleft(pnp)        ((pnp)->pn_pathlen)
