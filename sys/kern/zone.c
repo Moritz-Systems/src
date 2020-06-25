@@ -442,6 +442,7 @@ int     vn_is_readonly(vnode_t *);
 #define MBASE   ('z' - 'a' + 1 + 10)
 
 #define TS_RUN  0
+#define   TS_STOPPED      0x10    /* Stopped, initial state */
 
 /*
  * The following macro is a local version of isalnum() which limits
@@ -3971,7 +3972,7 @@ zthread_create(
 	 * things up.
 	 */
 	t = thread_create(stk, stksize, proc, arg, len, pp, TS_STOPPED, pri);
-	ASSERT(t->t_forw == NULL);
+//	ASSERT(t->t_forw == NULL);
 	mutex_enter(&zone_status_lock);
 	if (zone->zone_kthreads == NULL) {
 		t->t_forw = t->t_back = t;
