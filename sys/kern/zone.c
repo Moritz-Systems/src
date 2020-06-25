@@ -4096,6 +4096,7 @@ zone_chdir(vnode_t *vp, vnode_t **vpp, struct proc *pp)
 		VN_RELE(oldvp);
 }
 
+#if 0
 /*
  * Convert an rctl value represented by an nvlist_t into an rctl_val_t.
  */
@@ -4147,6 +4148,7 @@ nvlist2rctlval(nvlist_t *nvl, rctl_val_t *rv)
 
 	return (0);
 }
+#endif
 
 /*
  * Non-global zone version of start_init.
