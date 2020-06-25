@@ -4213,8 +4213,10 @@ zone_start_init(void)
 		if (zone_status_get(z) == ZONE_IS_BOOTING)
 			zone_status_set(z, ZONE_IS_RUNNING);
 		mutex_exit(&zone_status_lock);
+#if 0
 		/* cause the process to return to userland. */
 		lwp_rtt();
+#endif
 	}
 }
 
