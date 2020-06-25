@@ -4007,6 +4007,13 @@ zthread_create(
 	return (t);
 }
 
+static void
+thread_exit(void)
+{
+
+        kthread_exit(0);
+}
+
 /*
  * Similar to thread_exit().  Must be called by threads created via
  * zthread_exit().
@@ -4014,6 +4021,7 @@ zthread_create(
 void
 zthread_exit(void)
 {
+#if 0
 	kthread_t *t = curthread;
 	proc_t *pp = curproc;
 	zone_t *zone = pp->p_zone;
@@ -4061,6 +4069,7 @@ zthread_exit(void)
 	}
 	mutex_exit(&zone_status_lock);
 	zone_rele(zone);
+#endif
 	thread_exit();
 	/* NOTREACHED */
 }
