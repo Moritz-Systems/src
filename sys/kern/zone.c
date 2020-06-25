@@ -4241,12 +4241,14 @@ zsched(void *arg)
 	proc_t *initp = initproc;
 	zone_t *zone = za->zone;
 	cred_t *cr, *oldcred;
+#if 0
 	rctl_set_t *set;
 	rctl_alloc_gp_t *gp;
 	contract_t *ct = NULL;
 	task_t *tk, *oldtk;
 	rctl_entity_p_t e;
 	kproject_t *pj;
+#endif
 
 	nvlist_t *nvl = za->nvlist;
 	nvpair_t *nvp = NULL;
