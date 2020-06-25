@@ -441,6 +441,8 @@ int     vn_is_readonly(vnode_t *);
                 
 #define MBASE   ('z' - 'a' + 1 + 10)
 
+#define TS_RUN  0
+
 /*
  * The following macro is a local version of isalnum() which limits
  * alphabetic characters to the ranges a-z and A-Z; locale dependent
@@ -3920,6 +3922,23 @@ zone_get_hostid(zone_t *zonep)
 	return (zonep->zone_hostid);
 }
 
+static struct lwp *
+thread_create(void * stk, size_t stksize, void (*proc)(void *), void *arg,
+              size_t len, proc_t *pp, int state, pri_t pri)
+{
+        int error;
+        lwp_t *thr;
+
+        //ASSERT(stk == NULL && stksize == 0 && len == 0);
+        ASSERT(stk == NULL && len == 0);
+        ASSERT(state == TS_RUN);
+  
+        error = kthread_create(pri, KTHREAD_MPSAFE, NULL,
+            proc, arg, &thr, "zone");
+        KASSERT(error == 0);
+        return thr;
+}
+
 /*
  * Similar to thread_create(), but makes sure the thread is in the appropriate
  * zone's zsched process (curproc->p_zone->zone_zsched) before returning.
@@ -3929,7 +3948,7 @@ struct lwp *
 zthread_create(
     caddr_t stk,
     size_t stksize,
-    void (*proc)(void),
+    void (*proc)(void *),
     void *arg,
     size_t len,
     pri_t pri)
@@ -3951,7 +3970,7 @@ zthread_create(
 	 * Create a thread, but don't let it run until we've finished setting
 	 * things up.
 	 */
-	t = kthread_create(stk, stksize, proc, arg, len, pp, TS_STOPPED, pri);
+	t = thread_create(stk, stksize, proc, arg, len, pp, TS_STOPPED, pri);
 	ASSERT(t->t_forw == NULL);
 	mutex_enter(&zone_status_lock);
 	if (zone->zone_kthreads == NULL) {

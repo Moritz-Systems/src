@@ -783,7 +783,7 @@ struct zsd_entry {
  * Zone-safe version of thread_create() to be used when the caller wants to
  * create a kernel thread to run within the current zone's context.
  */
-extern struct lwp *zthread_create(caddr_t, size_t, void (*)(void), void *, size_t,
+extern struct lwp *zthread_create(caddr_t, size_t, void (*)(void *), void *, size_t,
     pri_t);
 extern void zthread_exit(void);
 
