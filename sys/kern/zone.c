@@ -4238,7 +4238,7 @@ zsched(void *arg)
 {
 	struct zsched_arg *za = arg;
 	proc_t *pp = curproc;
-	proc_t *initp = proc_init;
+	proc_t *initp = initproc;
 	zone_t *zone = za->zone;
 	cred_t *cr, *oldcred;
 	rctl_set_t *set;
