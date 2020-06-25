@@ -3972,7 +3972,8 @@ zthread_create(
 	 * things up.
 	 */
 	t = thread_create(stk, stksize, proc, arg, len, pp, TS_STOPPED, pri);
-//	ASSERT(t->t_forw == NULL);
+#if 0
+	ASSERT(t->t_forw == NULL);
 	mutex_enter(&zone_status_lock);
 	if (zone->zone_kthreads == NULL) {
 		t->t_forw = t->t_back = t;
@@ -4001,6 +4002,7 @@ zthread_create(
 	thread_unlock(t);
 
 	mutex_exit(&pp->p_lock);
+#endif
 
 	return (t);
 }
