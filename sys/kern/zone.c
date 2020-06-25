@@ -523,6 +523,8 @@ overflow:
         return (ERANGE);
 }
 
+#define ttoproc(_a)     ((_a)->l_proc)
+#define curthread curlwp
 
 /*
  * This constant specifies the number of seconds that threads waiting for
@@ -4150,10 +4152,16 @@ nvlist2rctlval(nvlist_t *nvl, rctl_val_t *rv)
 }
 #endif
 
+static int
+start_init_common()
+{
+	// XXX
+}
+
 /*
  * Non-global zone version of start_init.
  */
-void
+static void
 zone_start_init(void)
 {
 	proc_t *p = ttoproc(curthread);
