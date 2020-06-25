@@ -526,6 +526,8 @@ overflow:
 #define ttoproc(_a)     ((_a)->l_proc)
 #define curthread curlwp
 
+#define proc_exit(a,b) exit1(curlwp, (b), (a))
+
 /*
  * This constant specifies the number of seconds that threads waiting for
  * subsystems to release a zone's general-purpose references will wait before
