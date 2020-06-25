@@ -4075,7 +4075,7 @@ zthread_exit(void)
 }
 
 static void
-zone_chdir(vnode_t *vp, vnode_t **vpp, proc_t *pp)
+zone_chdir(vnode_t *vp, vnode_t **vpp, struct proc *pp)
 {
 	vnode_t *oldvp;
 
@@ -4088,10 +4088,10 @@ zone_chdir(vnode_t *vp, vnode_t **vpp, proc_t *pp)
 		audit_chdirec(vp, vpp);
 #endif
 
-	mutex_enter(&pp->p_lock);
+	mutex_enter(pp->p_lock);
 	oldvp = *vpp;
 	*vpp = vp;
-	mutex_exit(&pp->p_lock);
+	mutex_exit(pp->p_lock);
 	if (oldvp != NULL)
 		VN_RELE(oldvp);
 }
