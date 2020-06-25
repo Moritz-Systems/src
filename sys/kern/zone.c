@@ -4199,12 +4199,16 @@ zone_start_init(void)
 			zone_status_set(z, ZONE_IS_SHUTTING_DOWN);
 		}
 		mutex_exit(&zone_status_lock);
+#if 1
+		exit1(curlwp, z->zone_boot_err, 0);
+#else
 		/* It's gone bad, dispose of the process */
 		if (proc_exit(CLD_EXITED, z->zone_boot_err) != 0) {
 			mutex_enter(&p->p_lock);
 			ASSERT(p->p_flag & SEXITLWPS);
 			lwp_exit();
 		}
+#endif
 	} else {
 		if (zone_status_get(z) == ZONE_IS_BOOTING)
 			zone_status_set(z, ZONE_IS_RUNNING);
