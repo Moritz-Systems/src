@@ -4156,6 +4156,7 @@ static int
 start_init_common(void)
 {
 	// XXX
+	return 0;
 }
 
 /*
