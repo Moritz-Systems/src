@@ -4153,7 +4153,7 @@ nvlist2rctlval(nvlist_t *nvl, rctl_val_t *rv)
 #endif
 
 static int
-start_init_common()
+start_init_common(void)
 {
 	// XXX
 }
