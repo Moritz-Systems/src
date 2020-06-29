@@ -4564,6 +4564,7 @@ zsched(void *arg)
 #endif
 }
 
+#if 0
 /*
  * Helper function to determine if there are any submounts of the
  * provided path.  Used to make sure the zone doesn't "inherit" any
@@ -4602,6 +4603,7 @@ zone_mount_count(const char *rootpath)
 	vfs_list_unlock();
 	return (count);
 }
+#endif
 
 /*
  * Helper function to make sure that a zone created on 'rootpath'
@@ -5091,11 +5093,13 @@ zone_create(const char *zone_name, const char *zone_root,
 		goto errout;
 	}
 
+#if 0
 	if (zone_mount_count(zone->zone_rootpath) != 0) {
 		error = EBUSY;
 		error2 = ZE_AREMOUNTS;
 		goto errout;
 	}
+#endif
 
 	/*
 	 * Zone is still incomplete, but we need to drop all locks while
@@ -5627,10 +5631,12 @@ zone_destroy(zoneid_t zoneid)
 		return (set_errno(EINVAL));
 	}
 
+#if 0
 	if (zone_mount_count(zone->zone_rootpath) != 0) {
 		mutex_exit(&zonehash_lock);
 		return (set_errno(EBUSY));
 	}
+#endif
 	mutex_enter(&zone_status_lock);
 	status = zone_status_get(zone);
 	if (status < ZONE_IS_DOWN) {
