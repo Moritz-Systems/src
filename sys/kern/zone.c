@@ -4253,14 +4253,10 @@ zsched(void *arg)
 	nvlist_t *nvl = za->nvlist;
 	nvpair_t *nvp = NULL;
 
-	bcopy("zsched", PTOU(pp)->u_psargs, sizeof ("zsched"));
-	bcopy("zsched", PTOU(pp)->u_comm, sizeof ("zsched"));
-	PTOU(pp)->u_argc = 0;
-	PTOU(pp)->u_argv = 0;
-	PTOU(pp)->u_envp = 0;
-	PTOU(pp)->u_commpagep = 0;
-	closeall(P_FINFO(pp));
 
+	strncpy(p->p_comm, "zsched", MAXCOMLEN);
+
+#if 0
 	/*
 	 * We are this zone's "zsched" process.  As the zone isn't generally
 	 * visible yet we don't need to grab any locks before initializing its
@@ -4559,6 +4555,7 @@ zsched(void *arg)
 	zone->zone_kcred = NULL;
 
 	exit(CLD_EXITED, 0);
+#endif
 }
 
 /*
