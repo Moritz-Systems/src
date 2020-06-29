@@ -4236,11 +4236,15 @@ struct zsched_arg {
 static void
 zsched(void *arg)
 {
+#if 0
 	struct zsched_arg *za = arg;
+#endif
 	proc_t *pp = curproc;
+#if 0
 	proc_t *initp = initproc;
 	zone_t *zone = za->zone;
 	cred_t *cr, *oldcred;
+#endif
 #if 0
 	rctl_set_t *set;
 	rctl_alloc_gp_t *gp;
@@ -4250,11 +4254,13 @@ zsched(void *arg)
 	kproject_t *pj;
 #endif
 
+#if 0
 	nvlist_t *nvl = za->nvlist;
 	nvpair_t *nvp = NULL;
+#endif
 
 
-	strncpy(p->p_comm, "zsched", MAXCOMLEN);
+	strncpy(pp->p_comm, "zsched", MAXCOMLEN);
 
 #if 0
 	/*
