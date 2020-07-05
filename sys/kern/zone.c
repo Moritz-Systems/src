@@ -4659,6 +4659,7 @@ zone_set_privset(zone_t *zone, const priv_set_t *zone_privs,
 }
 #endif
 
+#if 0
 /*
  * We make creative use of nvlists to pass in rctls from userland.  The list is
  * a list of the following structures:
@@ -4736,6 +4737,7 @@ out:
 		nvlist_free(nvl);
 	return (error);
 }
+#endif
 
 int
 zone_create_error(int er_error, int er_ext, int *er_out)
