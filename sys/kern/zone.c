@@ -4739,7 +4739,7 @@ out:
 }
 #endif
 
-int
+static int
 zone_create_error(int er_error, int er_ext, int *er_out)
 {
 	if (er_out != NULL) {
