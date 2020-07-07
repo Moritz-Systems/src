@@ -4750,6 +4750,7 @@ zone_create_error(int er_error, int er_ext, int *er_out)
 	return (set_errno(er_error));
 }
 
+#if 0
 static int
 zone_set_label(zone_t *zone, const bslabel_t *lab, uint32_t doi)
 {
@@ -4766,6 +4767,7 @@ zone_set_label(zone_t *zone, const bslabel_t *lab, uint32_t doi)
 	zone->zone_slabel = tsl;
 	return (0);
 }
+#endif
 
 /*
  * Parses a comma-separated list of ZFS datasets into a per-zone dictionary.
@@ -5003,6 +5005,7 @@ zone_create(const char *zone_name, const char *zone_root,
 	 * match flag and sensitivity label.
 	 */
 	zone->zone_match = match;
+#if 0
 	if (is_system_labeled() && !(zone->zone_flags & ZF_IS_SCRATCH)) {
 		/* Fail if requested to set doi to anything but system's doi */
 		if (doi != 0 && doi != default_doi) {
@@ -5017,11 +5020,12 @@ zone_create(const char *zone_name, const char *zone_root,
 		}
 		insert_label_hash = B_TRUE;
 	} else {
+#endif
 		/* all zones get an admin_low label if system is not labeled */
 		zone->zone_slabel = l_admin_low;
 		label_hold(l_admin_low);
 		insert_label_hash = B_FALSE;
-	}
+//	}
 
 	/*
 	 * Stop all lwps since that's what normally happens as part of fork().
