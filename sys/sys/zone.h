@@ -65,6 +65,18 @@ typedef struct zone {
 	time_t		zone_boot_time;
 	struct vnode	*zone_rootvp;	/* zone's root vnode */
 	char		*zone_rootpath;	/* Path to zone's root + '/' */
+	/*
+	 * zone_lock protects the following fields of a zone_t:
+	 *	zone_ref
+	 *	zone_cred_ref
+	 *	zone_subsys_ref
+	 *	zone_ref_list
+	 *	zone_ntasks
+	 *	zone_flags
+	 *	zone_zsd
+	 *	zone_pfexecd
+	 */
+	kmutex_t	zone_lock;
 	int fake_zone[10];
 } zone_t;
 
