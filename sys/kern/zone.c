@@ -205,6 +205,13 @@
 
 #define ASSERT KASSERT
 
+#define MUTEX_HELD(x)           (mutex_owned(x))
+#define MUTEX_NOT_HELD(x)       (!mutex_owned(x) || panicstr != NULL)
+#define mutex_init(a, b, c, d)  mutex_init(a, MUTEX_DEFAULT, IPL_NONE)
+
+#define B_FALSE         0
+#define B_TRUE          1
+
 #if 0
 #include <sys/priv_impl.h>
 #include <sys/cred.h>

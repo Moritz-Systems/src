@@ -53,6 +53,27 @@ extern "C" {
 
 #include <sys/list.h>
 
+/*
+ * zone_status values
+ *
+ * You must modify zone_status_names in mdb(1M)'s genunix module
+ * (genunix/zone.c) when you modify this enum.
+ */
+typedef enum {
+	ZONE_IS_UNINITIALIZED = 0,
+	ZONE_IS_INITIALIZED,
+	ZONE_IS_READY,
+	ZONE_IS_BOOTING,
+	ZONE_IS_RUNNING,
+	ZONE_IS_SHUTTING_DOWN,
+	ZONE_IS_EMPTY,
+	ZONE_IS_DOWN,
+	ZONE_IS_DYING,
+	ZONE_IS_DEAD
+} zone_status_t;
+#define	ZONE_MIN_STATE		ZONE_IS_UNINITIALIZED
+#define	ZONE_MAX_STATE		ZONE_IS_DEAD
+
 typedef struct zone_ref {
 	struct zone	*zref_zone; /* the zone to which the reference refers */
 	list_node_t	zref_linkage; /* linkage for zone_t::zone_ref_list */
@@ -78,6 +99,7 @@ typedef struct zone {
 	 */
 	kmutex_t	zone_lock;
 	list_t		zone_zsd;	/* list of Zone-Specific Data values */
+	zone_status_t	zone_status;	/* protected by zone_status_lock */
 } zone_t;
 
 extern zone_t zone0;
@@ -150,27 +172,6 @@ struct zsd_entry {
 
 #define	ZSD_ALL_INPROGRESS \
 	(ZSD_CREATE_INPROGRESS|ZSD_SHUTDOWN_INPROGRESS|ZSD_DESTROY_INPROGRESS)
-
-/*
- * zone_status values
- *
- * You must modify zone_status_names in mdb(1M)'s genunix module
- * (genunix/zone.c) when you modify this enum.
- */
-typedef enum {
-	ZONE_IS_UNINITIALIZED = 0,
-	ZONE_IS_INITIALIZED,
-	ZONE_IS_READY,
-	ZONE_IS_BOOTING,
-	ZONE_IS_RUNNING,
-	ZONE_IS_SHUTTING_DOWN,
-	ZONE_IS_EMPTY,
-	ZONE_IS_DOWN,
-	ZONE_IS_DYING,
-	ZONE_IS_DEAD
-} zone_status_t;
-#define	ZONE_MIN_STATE		ZONE_IS_UNINITIALIZED
-#define	ZONE_MAX_STATE		ZONE_IS_DEAD
 
 /*
  * Get the status  of the zone (at the time it was called).  The state may
