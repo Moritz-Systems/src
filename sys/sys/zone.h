@@ -139,6 +139,27 @@ struct zsd_entry {
 #define	ZSD_ALL_INPROGRESS \
 	(ZSD_CREATE_INPROGRESS|ZSD_SHUTDOWN_INPROGRESS|ZSD_DESTROY_INPROGRESS)
 
+/*
+ * zone_status values
+ *
+ * You must modify zone_status_names in mdb(1M)'s genunix module
+ * (genunix/zone.c) when you modify this enum.
+ */
+typedef enum {
+	ZONE_IS_UNINITIALIZED = 0,
+	ZONE_IS_INITIALIZED,
+	ZONE_IS_READY,
+	ZONE_IS_BOOTING,
+	ZONE_IS_RUNNING,
+	ZONE_IS_SHUTTING_DOWN,
+	ZONE_IS_EMPTY,
+	ZONE_IS_DOWN,
+	ZONE_IS_DYING,
+	ZONE_IS_DEAD
+} zone_status_t;
+#define	ZONE_MIN_STATE		ZONE_IS_UNINITIALIZED
+#define	ZONE_MAX_STATE		ZONE_IS_DEAD
+
 extern zoneid_t getzoneid(void);
 
 #endif	/* _KERNEL || _FAKE_KERNEL */

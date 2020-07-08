@@ -202,6 +202,8 @@
 #include <sys/zone.h>
 #include <sys/kmem.h>
 
+#define ASSERT KASSERT
+
 #if 0
 #include <sys/priv_impl.h>
 #include <sys/cred.h>
@@ -287,11 +289,13 @@ static kcondvar_t zone_destroy_cv;
  * but then we'd need another lock for zone_destroy_cv, and why bother?
  */
 static kmutex_t zone_status_lock;
+#endif
 
 /*
  * ZSD-related global variables.
  */
 static kmutex_t zsd_key_lock;	/* protects the following two */
+
 /*
  * The next caller of zone_key_create() will be assigned a key of ++zsd_keyval.
  */
@@ -301,9 +305,12 @@ static zone_key_t zsd_keyval = 0;
  */
 static list_t zsd_registered_keys;
 
+#if 0
 int zone_hash_size = 256;
 static mod_hash_t *zonehashbyname, *zonehashbyid, *zonehashbylabel;
+#endif
 static kmutex_t zonehash_lock;
+#if 0
 static uint_t zonecount;
 static id_space_t *zoneid_space;
 
@@ -319,11 +326,13 @@ static id_space_t *zoneid_space;
 zone_t zone0;
 zone_t *global_zone = NULL;	/* Set when the global zone is initialized */
 
+#endif
 /*
  * List of active zones, protected by zonehash_lock.
  */
 static list_t zone_active;
 
+#if 0
 /*
  * List of destroyed zones that still have outstanding cred references.
  * Used for debugging.  Uses a separate lock to avoid lock ordering
