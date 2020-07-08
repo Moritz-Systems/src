@@ -77,7 +77,7 @@ typedef struct zone {
 	 *	zone_pfexecd
 	 */
 	kmutex_t	zone_lock;
-	int fake_zone[10];
+	list_t		zone_zsd;	/* list of Zone-Specific Data values */
 } zone_t;
 
 extern zone_t zone0;
@@ -171,6 +171,12 @@ typedef enum {
 } zone_status_t;
 #define	ZONE_MIN_STATE		ZONE_IS_UNINITIALIZED
 #define	ZONE_MAX_STATE		ZONE_IS_DEAD
+
+/*
+ * Get the status  of the zone (at the time it was called).  The state may
+ * have progressed by the time it is returned.
+ */
+extern zone_status_t zone_status_get(zone_t *);
 
 extern zoneid_t getzoneid(void);
 

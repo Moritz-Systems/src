@@ -535,6 +535,7 @@ mount_completed(zone_t *zp)
 		cv_broadcast(&zp->zone_mount_cv);
 	mutex_exit(&zp->zone_mount_lock);
 }
+#endif
 
 /*
  * ZSD routines.
@@ -619,7 +620,6 @@ zsd_find_mru(list_t *l, zone_key_t key)
 	}
 	return (NULL);
 }
-#endif
 
 void
 zone_key_create(zone_key_t *keyp, void *(*create)(zoneid_t),
@@ -2479,6 +2479,7 @@ zone_status_set(zone_t *zone, zone_status_t status)
 
 	cv_broadcast(&zone->zone_cv);
 }
+#endif
 
 /*
  * Public function to retrieve the zone status.  The zone status may
@@ -2490,6 +2491,7 @@ zone_status_get(zone_t *zone)
 	return (zone->zone_status);
 }
 
+#if 0
 static int
 zone_set_bootargs(zone_t *zone, const char *zone_bootargs)
 {
