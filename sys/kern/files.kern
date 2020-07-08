@@ -194,6 +194,7 @@ file	kern/uipc_socket2.c		kern
 file	kern/uipc_syscalls.c		kern
 file	kern/uipc_usrreq.c		kern
 file	kern/zone.c			kern
+file	kern/list.c			kern
 
 define	vfs: kern
 file	kern/vfs_acl.c			vfs
