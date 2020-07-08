@@ -198,6 +198,7 @@
  *
  */
 
+#if 0
 #include <sys/priv_impl.h>
 #include <sys/cred.h>
 #include <c2/audit.h>
@@ -605,6 +606,7 @@ zsd_find_mru(list_t *l, zone_key_t key)
 	}
 	return (NULL);
 }
+#endif
 
 void
 zone_key_create(zone_key_t *keyp, void *(*create)(zoneid_t),
@@ -813,6 +815,7 @@ zone_getspecific(zone_key_t key, zone_t *zone)
 	return (data);
 }
 
+#if 0
 /*
  * Function used to initialize a zone's list of ZSD callbacks and data
  * when the zone is being created.  The callbacks are initialized from
@@ -7383,3 +7386,4 @@ done:
 	else
 		return (0);
 }
+#endif
