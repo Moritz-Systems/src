@@ -201,6 +201,7 @@
 #include <sys/types.h>
 #include <sys/zone.h>
 #include <sys/kmem.h>
+#include <sys/sdt.h>
 
 #define ASSERT KASSERT
 
@@ -403,6 +404,7 @@ static int zone_remove_datalink(zoneid_t, datalink_id_t);
 static int zone_list_datalink(zoneid_t, int *, datalink_id_t *);
 static int zone_set_network(zoneid_t, zone_net_data_t *);
 static int zone_get_network(zoneid_t, zone_net_data_t *);
+#endif
 
 typedef boolean_t zsd_applyfn_t(kmutex_t *, boolean_t, zone_t *, zone_key_t);
 
@@ -416,7 +418,7 @@ static boolean_t zsd_wait_for_creator(zone_t *, struct zsd_entry *,
     kmutex_t *);
 static boolean_t zsd_wait_for_inprogress(zone_t *, struct zsd_entry *,
     kmutex_t *);
-
+#if 0
 /*
  * Bump this number when you alter the zone syscall interfaces; this is
  * because we need to have support for previous API versions in libc
@@ -804,7 +806,7 @@ zone_setspecific(zone_key_t key, zone_t *zone, const void *data)
 		/*
 		 * Replace old value with new
 		 */
-		t->zsd_data = (void *)data;
+		t->zsd_data = __UNCONST(data);
 		mutex_exit(&zone->zone_lock);
 		return (0);
 	}
@@ -828,7 +830,6 @@ zone_getspecific(zone_key_t key, zone_t *zone)
 	return (data);
 }
 
-#if 0
 /*
  * Function used to initialize a zone's list of ZSD callbacks and data
  * when the zone is being created.  The callbacks are initialized from
@@ -1306,7 +1307,7 @@ zsd_wait_for_inprogress(zone_t *zone, struct zsd_entry *t, kmutex_t *lockp)
 	}
 	return (dropped);
 }
-
+#if 0
 /*
  * Frees memory associated with the zone dataset list.
  */
