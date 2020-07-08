@@ -48,6 +48,8 @@ __KERNEL_RCSID(0, "$NetBSD: subr_prof.c,v 1.49 2019/04/06 03:06:28 thorpej Exp $
 
 #include <sys/cpu.h>
 
+#include <sys/zone.h>
+
 #ifdef GPROF
 #include <sys/malloc.h>
 #include <sys/gmon.h>

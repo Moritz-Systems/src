@@ -29,9 +29,9 @@
 #include <sys/types.h>
 #include <sys/mutex.h>
 #include <sys/param.h>
-#include <sys/cred.h>
-#include <sys/rctl.h>
-#include <sys/ksynch.h>
+//#include <sys/cred.h>
+//#include <sys/rctl.h>
+//#include <sys/ksynch.h>
 
 #ifdef	__cplusplus
 extern "C" {

@@ -166,6 +166,16 @@ typedef	uint32_t	id_t;		/* group id, process id or user id */
 typedef	uint64_t	ino_t;		/* inode number */
 typedef	long		key_t;		/* IPC key (for Sys V IPC) */
 
+typedef id_t            zoneid_t;
+
+typedef unsigned char   uchar_t; 
+typedef unsigned short  ushort_t;
+typedef unsigned int    uint_t;
+typedef unsigned long   ulong_t;
+typedef unsigned long   ulong_t;
+
+typedef void *       caddr_t;
+
 #ifndef	mode_t
 typedef	__mode_t	mode_t;		/* permissions */
 #define	mode_t		__mode_t
