@@ -90,6 +90,55 @@ extern int 	zone_key_delete(zone_key_t);
 extern void	*zone_getspecific(zone_key_t, zone_t *);
 extern int	zone_setspecific(zone_key_t, zone_t *, const void *);
 
+/*
+ * The definition of a zsd_entry is truly private to zone.c and is only
+ * placed here so it can be shared with mdb.
+ *
+ * State maintained for each zone times each registered key, which tracks
+ * the state of the create, shutdown and destroy callbacks.
+ *
+ * zsd_flags is used to keep track of pending actions to avoid holding locks
+ * when calling the create/shutdown/destroy callbacks, since doing so
+ * could lead to deadlocks.
+ */
+struct zsd_entry {
+	zone_key_t		zsd_key;	/* Key used to lookup value */
+	void			*zsd_data;	/* Caller-managed value */
+	/*
+	 * Callbacks to be executed when a zone is created, shutdown, and
+	 * destroyed, respectively.
+	 */
+	void			*(*zsd_create)(zoneid_t);
+	void			(*zsd_shutdown)(zoneid_t, void *);
+	void			(*zsd_destroy)(zoneid_t, void *);
+	list_node_t		zsd_linkage;
+	uint16_t		zsd_flags;	/* See below */
+	kcondvar_t		zsd_cv;
+};
+
+/*
+ * zsd_flags
+ */
+#define	ZSD_CREATE_NEEDED	0x0001
+#define	ZSD_CREATE_INPROGRESS	0x0002
+#define	ZSD_CREATE_COMPLETED	0x0004
+#define	ZSD_SHUTDOWN_NEEDED	0x0010
+#define	ZSD_SHUTDOWN_INPROGRESS	0x0020
+#define	ZSD_SHUTDOWN_COMPLETED	0x0040
+#define	ZSD_DESTROY_NEEDED	0x0100
+#define	ZSD_DESTROY_INPROGRESS	0x0200
+#define	ZSD_DESTROY_COMPLETED	0x0400
+
+#define	ZSD_CREATE_ALL	\
+	(ZSD_CREATE_NEEDED|ZSD_CREATE_INPROGRESS|ZSD_CREATE_COMPLETED)
+#define	ZSD_SHUTDOWN_ALL	\
+	(ZSD_SHUTDOWN_NEEDED|ZSD_SHUTDOWN_INPROGRESS|ZSD_SHUTDOWN_COMPLETED)
+#define	ZSD_DESTROY_ALL	\
+	(ZSD_DESTROY_NEEDED|ZSD_DESTROY_INPROGRESS|ZSD_DESTROY_COMPLETED)
+
+#define	ZSD_ALL_INPROGRESS \
+	(ZSD_CREATE_INPROGRESS|ZSD_SHUTDOWN_INPROGRESS|ZSD_DESTROY_INPROGRESS)
+
 extern zoneid_t getzoneid(void);
 
 #endif	/* _KERNEL || _FAKE_KERNEL */

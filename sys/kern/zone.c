@@ -198,6 +198,10 @@
  *
  */
 
+#include <sys/types.h>
+#include <sys/zone.h>
+#include <sys/kmem.h>
+
 #if 0
 #include <sys/priv_impl.h>
 #include <sys/cred.h>
@@ -248,7 +252,7 @@
 #include <sys/rctl.h>
 #include <sys/fss.h>
 #include <sys/brand.h>
-#include <sys/zone.h>
+//#include <sys/zone.h>
 #include <net/if.h>
 #include <sys/cpucaps.h>
 #include <vm/seg.h>
