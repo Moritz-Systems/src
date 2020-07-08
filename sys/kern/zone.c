@@ -843,7 +843,7 @@ zone_getspecific(zone_key_t key, zone_t *zone)
  * the template list (zsd_registered_keys). The constructor callback is
  * executed later (once the zone exists and with locks dropped).
  */
-static void
+__used static void
 zone_zsd_configure(zone_t *zone)
 {
 	struct zsd_entry *zsdp;
@@ -882,7 +882,7 @@ enum zsd_callback_type { ZSD_CREATE, ZSD_SHUTDOWN, ZSD_DESTROY };
 /*
  * Helper function to execute shutdown or destructor callbacks.
  */
-static void
+__used static void
 zone_zsd_callbacks(zone_t *zone, enum zsd_callback_type ct)
 {
 	struct zsd_entry *t;
@@ -932,7 +932,7 @@ zone_zsd_callbacks(zone_t *zone, enum zsd_callback_type ct)
  * Called when the zone is going away; free ZSD-related memory, and
  * destroy the zone_zsd list.
  */
-static void
+__used static void
 zone_free_zsd(zone_t *zone)
 {
 	struct zsd_entry *t, *next;
