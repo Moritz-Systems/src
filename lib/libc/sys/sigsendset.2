@@ -48,3 +48,163 @@
 .Sh DESCRIPTION
 The
 .Fn sigsend
+function sends the signal given by
+.Fa sig
+to a process or a group of processes specified by
+.Fa idtype
+and
+.Fa id .
+.Fa sig
+may be one of the signals specified in
+.Xr sigaction 2
+or it may be 0, in which case
+error checking is performed but no
+signal is actually sent.
+This can be used to check the validity of
+.Fa pid .
+.Pp
+For a process to have permission to send a signal to a process designated
+by
+.Fa pid ,
+the real or effective user ID of the receiving process must match
+that of the sending process or the user must have appropriate privileges
+(such as given by a set-user-ID program or the user is the super-user).
+A single exception is the signal SIGCONT, which may always be sent
+to any descendant of the current process.
+.Pp
+The set of processes to be signaled is specified by the arguments
+.Fa idtype
+and
+.Fa id .
+The separate
+.Fa idtype
+and
+.Fa id
+arguments support many other types of
+identifiers in addition to process IDs and process group IDs.
+.Bl -bullet -offset indent
+.It
+If
+.Fa idtype
+is
+.Dv P_PID ,
+.Fn sigsend
+sends a signal to a process with a process ID equal to
+.Dv (pid_t)id .
+.It
+If
+.Fa idtype
+is
+.Dv P_PGID ,
+.Fn sigsend
+sends a signal to a process with a process group ID equal to
+.Dv (pid_t)id .
+.It
+If
+.Fa idtype
+is
+.Dv P_ALL ,
+.Fn sigsend
+sends a signal to all processes and the
+.Dv id
+is ignored.
+.It
+If
+.Fa idtype
+is
+.Dv P_PID
+or
+.Dv P_PGID
+and the
+.Dv id
+is zero,
+.Fn sigsend
+sends a signal to any child process in the same process group as the caller.
+.El
+.Pp
+Non-standard identifier types supported by this
+implementation are:
+.Bl -tag -width P_JAILID
+.It Dv P_UID
+Signal processes whose effective user ID is equal to
+.Dv (uid_t) Fa id .
+.It Dv P_GID
+Signal processes whose effective group ID is equal to
+.Dv (gid_t) Fa id .
+.It Dv P_SID
+Signal processes whose session ID is equal to
+.Fa id .
+.\" This is just how sessions work, not sure this needs to be documented here
+If the child process started its own session,
+its session ID will be the same as its process ID.
+Otherwise the session ID of a child process will match the caller's session ID.
+.El
+.Pp
+If
+.Fa id
+is equal to
+.Dv P_MYID ,
+the value of
+.Fa id
+is retrieved from the calling process.
+.Pp
+The process with ID of 0 is always excluded and the process with process ID of 1
+excluded unless
+.Fa idtype
+is equal to
+.Dv P_PID .
+.Pp
+If
+.Fa sig
+is equal to
+.Dv 0 ,
+then no signal is sent to the process ID or process group ID, but error
+checking is performed.
+This can be used to check if the process ID or process group ID exist.
+.Pp
+.Sh RETURN VALUES
+Upon successful completion of
+.Fn sigsend
+and
+.Fa sigsendset ,
+a value of 0 is returned.
+Otherwise, a value of \-1 is returned and
+.Va errno
+is set to indicate the error.
+.Sh ERRORS
+.Fn kill
+will fail and no signal will be sent if:
+.Bl -tag -width Er
+.It Bq Er EINVAL
+.Fa sig
+is not a valid signal number or
+.Fa idtype
+is not a valid
+.Dv idtype field.
+.It Bq Er EPERM
+The sending process is not the super-user and its effective
+user id does not match the effective user-id of the receiving process.
+When signaling a process group, this error is returned if any members
+of the group could not be signaled.
+.It Bq Er ESRCH
+No process can be found corresponding to that specified by
+.Fa pid ;
+or the process id was given as 0
+but the sending process does not have a process group.
+.El
+In addition,
+.Fa sigsendset will fail and return immediately if:
+
+.Sh SEE ALSO
+.Xr getpgrp 2 ,
+.Xr getpid 2 ,
+.Xr kill 2 ,
+.Xr sigaction 2 ,
+.Xr killpg 3 ,
+.Xr signal 7
+.Sh STANDARDS
+
+The
+.Fn kill
+function is expected to conform to
+.St -p1003.1-90 .
