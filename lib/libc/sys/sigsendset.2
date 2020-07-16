@@ -194,7 +194,12 @@ but the sending process does not have a process group.
 .El
 In addition,
 .Fa sigsendset will fail and return immediately if:
-
+.Bl -tag -width Er
+.It Bq Er EFAULT
+The
+.Fa idtype
+argument point to an illegal address.
+.El
 .Sh SEE ALSO
 .Xr getpgrp 2 ,
 .Xr getpid 2 ,
@@ -203,8 +208,14 @@ In addition,
 .Xr killpg 3 ,
 .Xr signal 7
 .Sh STANDARDS
-
 The
-.Fn kill
-function is expected to conform to
-.St -p1003.1-90 .
+.Fn ftok
+function originated with System V.
+.Sh HISTORY
+.Fn sigsend
+and
+.Fn sigsendset
+first appeared in
+.Nx 10 .
+.Sh AUTHORS
+.An Kamil Rytarowski Aq Mt kamil@netbsd.org
