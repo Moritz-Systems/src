@@ -869,6 +869,17 @@ sys_sigsendset(struct lwp *l, const struct sys_sigsendset_args *uap, register_t 
 
 	return kill1(l, SCARG(uap, pid), &ksi, retval);
 #else
+	procset_t ps;
+	int error;
+
+	error = copyin(SCARG(uap, psp), &ps, sizeof(ps));
+	if (error != 0)
+		return error;
+
+	;
+
+	ps = SCARG(uap, psp);
+
 	return 0;
 #endif
 }
