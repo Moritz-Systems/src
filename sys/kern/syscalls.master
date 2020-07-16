@@ -1045,3 +1045,4 @@
 498	STD		{ int|sys||__acl_aclcheck_fd(int filedes, \
 			    acl_type_t type, struct acl *aclp); }
 499	STD	RUMP	{ long|sys||lpathconf(const char *path, int name); }
+500	STD		{ int|sys||sigsendset(const procset_t *psp, int sig); }
