@@ -183,9 +183,35 @@ typedef struct procset {
 } procset_t;
 .Ed
 .Pp
-
-
-
+The fields of
+.Dv procset_t
+are:
+.Bl -tag -width XXXp_lidtype -offset p_lidtype
+.It p_op
+The operator connecting the left and the right operand.
+.It p_lidtype
+The left operand id type.
+.It p_lid
+The left operand id.
+.It p_ridtype
+The right operand id type.
+.It p_rid
+The right operand id.
+.El
+.Pp
+The
+.Dv p_op
+field can contain one of the following values:
+.Bl -tag -width XXXPOP_DIFF -offset indent
+.It POP_AND
+Process is in both the left set and the right set.
+.It POP_OR
+Process is in the left set or the right set or both.
+.It POP_XOR
+Process is in the left set or the right set but not both.
+.It POP_DIFF
+Process is in the left set and not in the right set.
+.El
 .Pp
 .Fn setprocset
 is a macro which is provided for ease of initializing a
