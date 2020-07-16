@@ -150,6 +150,7 @@ ASM=\
 		setuid.S __shmctl50.S shmdt.S shmget.S shutdown.S \
 		sigqueueinfo.S \
 		__sigaltstack14.S __sigpending14.S __sigaction_sigtramp.S \
+		sigsendset.S \
 		____sigtimedwait50.S __socket30.S socketpair.S __stat50.S \
 		__statvfs190.S swapctl.S symlink.S symlinkat.S __sysctl.S \
 	timer_create.S timer_delete.S __timer_gettime50.S timer_getoverrun.S \
@@ -279,8 +280,8 @@ MAN+=	accept.2 access.2 acct.2 adjtime.2 bind.2 brk.2 chdir.2 \
 	semget.2 semop.2 send.2 setgroups.2 setpgid.2 setregid.2 \
 	setreuid.2 setsid.2 setuid.2 shmat.2 shmctl.2 shmget.2 \
 	shutdown.2 sigaction.2 sigaltstack.2 sigpending.2 \
-	sigprocmask.2 sigqueue.2 sigstack.2 sigsuspend.2 sigtimedwait.2 \
-	socket.2 \
+	sigprocmask.2 sigqueue.2 sigsendset.2 sigstack.2 sigsuspend.2 \
+	sigtimedwait.2 socket.2 \
 	socketpair.2 stat.2 statvfs.2 swapctl.2 swapon.3 symlink.2 \
 	sync.2 sysarch.2 syscall.2 timer_create.2 timer_delete.2 \
 	timer_settime.2 truncate.2 umask.2 undelete.2 \
@@ -372,6 +373,7 @@ MLINKS+=shmat.2 shmdt.2
 MLINKS+=symlink.2 symlinkat.2
 MLINKS+=timer_settime.2 timer_gettime.2 timer_settime.2 timer_getoverrun.2
 MLINKS+=sigqueue.2 sigqueueinfo.2
+MLINKS+=sigsendset.2 sigsend.2
 MLINKS+=sigtimedwait.2 sigwaitinfo.2
 MLINKS+=sigtimedwait.2 sigwait.2
 MLINKS+=stat.2 fstat.2 stat.2 lstat.2

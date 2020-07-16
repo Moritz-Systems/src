@@ -649,6 +649,7 @@
 #define shquote			_shquote
 #define siginterrupt		_siginterrupt
 #define signal			_signal
+#define sigsendset		_sigsendset
 #define sigtimedwait		_sigtimedwait
 #define sl_add			_sl_add
 #define sl_create		_sl_create
