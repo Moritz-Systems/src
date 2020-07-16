@@ -849,3 +849,26 @@ out:
 	}
 	return error;
 }
+
+int
+sys_sigsendset(struct lwp *l, const struct sys_sigsendset_args *uap, register_t *retval)
+{
+	/* {
+		syscallarg(const procset_t *) psp;
+		syscallarg(int) sig;
+	} */
+#if 0
+	ksiginfo_t	ksi;
+
+	KSI_INIT(&ksi);
+
+	ksi.ksi_signo = SCARG(uap, signum);
+	ksi.ksi_code = SI_USER;
+	ksi.ksi_pid = l->l_proc->p_pid;
+	ksi.ksi_uid = kauth_cred_geteuid(l->l_cred);
+
+	return kill1(l, SCARG(uap, pid), &ksi, retval);
+#else
+	return 0;
+#endif
+}
