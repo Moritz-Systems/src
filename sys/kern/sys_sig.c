@@ -850,6 +850,11 @@ out:
 	return error;
 }
 
+struct sigsendset_ctx {
+	ksiginfo_t ksi;
+	procset_t ps;
+};
+
 int
 sys_sigsendset(struct lwp *l, const struct sys_sigsendset_args *uap, register_t *retval)
 {
@@ -857,29 +862,27 @@ sys_sigsendset(struct lwp *l, const struct sys_sigsendset_args *uap, register_t 
 		syscallarg(const procset_t *) psp;
 		syscallarg(int) sig;
 	} */
-#if 0
-	ksiginfo_t	ksi;
-
-	KSI_INIT(&ksi);
-
-	ksi.ksi_signo = SCARG(uap, signum);
-	ksi.ksi_code = SI_USER;
-	ksi.ksi_pid = l->l_proc->p_pid;
-	ksi.ksi_uid = kauth_cred_geteuid(l->l_cred);
-
-	return kill1(l, SCARG(uap, pid), &ksi, retval);
-#else
-	procset_t ps;
+	struct sigsendset_ctx ctx;
 	int error;
 
-	error = copyin(SCARG(uap, psp), &ps, sizeof(ps));
+	error = copyin(SCARG(uap, psp), &ctx.ps, sizeof(ctx.ps));
 	if (error != 0)
 		return error;
+
+	KSI_INIT(&ctx.ksi);
+
+	ctx.ksi.ksi_signo = SCARG(uap, sig);
+	ctx.ksi.ksi_code = SI_USER;
+	ctx.ksi.ksi_pid = l->l_proc->p_pid;
+	ctx.ksi.ksi_uid = kauth_cred_geteuid(l->l_cred);
 
 	;
 
 	ps = SCARG(uap, psp);
 
 	return 0;
+
+#if 0
+	return kill1(l, SCARG(uap, pid), &ksi, retval);
 #endif
 }
