@@ -1,4 +1,4 @@
-/* $NetBSD: init_sysent.c,v 1.335 2020/06/11 03:45:30 dholland Exp $ */
+/* $NetBSD$ */
 
 /*
  * System call switch table.
@@ -8,7 +8,7 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: init_sysent.c,v 1.335 2020/06/11 03:45:30 dholland Exp $");
+__KERNEL_RCSID(0, "$NetBSD$");
 
 #ifdef _KERNEL_OPT
 #include "opt_modular.h"
@@ -22,6 +22,7 @@ __KERNEL_RCSID(0, "$NetBSD: init_sysent.c,v 1.335 2020/06/11 03:45:30 dholland E
 #include <sys/mount.h>
 #include <sys/sched.h>
 #include <sys/idtype.h>
+#include <sys/procset.h>
 #include <sys/syscallargs.h>
 #include <sys/acl.h>
 
@@ -2430,8 +2431,10 @@ struct sysent sysent[] = {
 		.sy_call = (sy_call_t *)sys_lpathconf
 	},		/* 499 = lpathconf */
 	{
-		.sy_call = sys_nosys,
-	},		/* 500 = filler */
+		ns(struct sys_sigsendset_args),
+		.sy_flags = SYCALL_ARG_PTR,
+		.sy_call = (sy_call_t *)sys_sigsendset
+	},		/* 500 = sigsendset */
 	{
 		.sy_call = sys_nosys,
 	},		/* 501 = filler */

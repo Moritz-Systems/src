@@ -1,4 +1,4 @@
-/* $NetBSD: syscallargs.h,v 1.301 2020/06/11 03:45:30 dholland Exp $ */
+/* $NetBSD$ */
 
 /*
  * System call argument lists.
@@ -3317,6 +3317,14 @@ struct sys_lpathconf_args {
 };
 check_syscall_args(sys_lpathconf)
 
+#ifndef RUMP_CLIENT
+struct sys_sigsendset_args {
+	syscallarg(const procset_t *) psp;
+	syscallarg(int) sig;
+};
+check_syscall_args(sys_sigsendset)
+#endif /* !RUMP_CLIENT */
+
 /*
  * System call prototypes.
  */
@@ -4230,6 +4238,8 @@ int	sys___acl_aclcheck_file(struct lwp *, const struct sys___acl_aclcheck_file_a
 int	sys___acl_aclcheck_fd(struct lwp *, const struct sys___acl_aclcheck_fd_args *, register_t *);
 
 int	sys_lpathconf(struct lwp *, const struct sys_lpathconf_args *, register_t *);
+
+int	sys_sigsendset(struct lwp *, const struct sys_sigsendset_args *, register_t *);
 
 #endif /* !RUMP_CLIENT */
 #endif /* _SYS_SYSCALLARGS_H_ */

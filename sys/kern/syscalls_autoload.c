@@ -1,4 +1,4 @@
-/* $NetBSD: syscalls_autoload.c,v 1.40 2020/06/11 03:45:30 dholland Exp $ */
+/* $NetBSD$ */
 
 /*
  * System call autoload table.
@@ -8,7 +8,7 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: syscalls_autoload.c,v 1.40 2020/06/11 03:45:30 dholland Exp $");
+__KERNEL_RCSID(0, "$NetBSD$");
 
 #ifdef _KERNEL_OPT
 #include "opt_modular.h"
@@ -22,6 +22,7 @@ __KERNEL_RCSID(0, "$NetBSD: syscalls_autoload.c,v 1.40 2020/06/11 03:45:30 dholl
 #include <sys/mount.h>
 #include <sys/sched.h>
 #include <sys/idtype.h>
+#include <sys/procset.h>
 #include <sys/syscallargs.h>
 #include <sys/acl.h>
 static struct sc_autoload netbsd_syscalls_autoload[] = {

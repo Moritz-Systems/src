@@ -1,4 +1,4 @@
-/* $NetBSD: syscall.h,v 1.317 2020/06/11 03:45:30 dholland Exp $ */
+/* $NetBSD$ */
 
 /*
  * System call numbers.
@@ -1389,6 +1389,9 @@
 /* syscall: "lpathconf" ret: "long" args: "const char *" "int" */
 #define	SYS_lpathconf	499
 
-#define	SYS_MAXSYSCALL	500
+/* syscall: "sigsendset" ret: "int" args: "const procset_t *" "int" */
+#define	SYS_sigsendset	500
+
+#define	SYS_MAXSYSCALL	501
 #define	SYS_NSYSENT	512
 #endif /* _SYS_SYSCALL_H_ */
