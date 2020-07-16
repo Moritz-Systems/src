@@ -211,8 +211,13 @@ argument point to an illegal address.
 .Xr signal 7
 .Sh STANDARDS
 The
-.Fn ftok
-function originated with System V.
+.Fn sigsendset
+and
+.Fn setprocset
+originated with System V.
+.Pp
+.Fn setprocset
+is an extension originated in SunOS.
 .Sh HISTORY
 .Fn sigsend ,
 .Fn sigsendset
