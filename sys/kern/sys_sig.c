@@ -853,7 +853,19 @@ out:
 struct sigsendset_ctx {
 	ksiginfo_t ksi;
 	procset_t ps;
+	int error;
 };
+
+static int
+sigsendset_callback(struct proc *p, void *arg)
+{
+	struct sigsendset_ctx *ctx = arg;
+
+	if (kauth_authorize_process(kauth_cred_get(),
+	    KAUTH_PROCESS_CANSEE, p,
+	    KAUTH_ARG(KAUTH_REQ_PROCESS_CANSEE_ENTRY), NULL, NULL) != 0)
+		return 0;
+}
 
 int
 sys_sigsendset(struct lwp *l, const struct sys_sigsendset_args *uap, register_t *retval)
@@ -876,11 +888,10 @@ sys_sigsendset(struct lwp *l, const struct sys_sigsendset_args *uap, register_t 
 	ctx.ksi.ksi_pid = l->l_proc->p_pid;
 	ctx.ksi.ksi_uid = kauth_cred_geteuid(l->l_cred);
 
-	;
+	proclist_foreach_call(&allproc,
+	    sigsendset_callback, &ctx);
 
-	ps = SCARG(uap, psp);
-
-	return 0;
+	return ctx.error;
 
 #if 0
 	return kill1(l, SCARG(uap, pid), &ksi, retval);
