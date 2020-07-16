@@ -33,7 +33,7 @@
 #define _SYS_PROCSET_H_
 
 #include <sys/types.h>		/* for id_t */
-#include <sys/idtypes.h>	/* for idtype_t */
+#include <sys/idtype.h>		/* for idtype_t */
 
 typedef enum idop {
 	POP_AND,	/* set disjunction */
