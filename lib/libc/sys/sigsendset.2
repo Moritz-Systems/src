@@ -166,7 +166,7 @@ This can be used to check if the process ID or process group ID exist.
 Upon successful completion of
 .Fn sigsend
 and
-.Fa sigsendset ,
+.Fn sigsendset ,
 a value of 0 is returned.
 Otherwise, a value of \-1 is returned and
 .Va errno
@@ -192,8 +192,10 @@ No process can be found corresponding to that specified by
 or the process id was given as 0
 but the sending process does not have a process group.
 .El
+.Pp
 In addition,
-.Fa sigsendset will fail and return immediately if:
+.Fn sigsendset
+will fail and return immediately if:
 .Bl -tag -width Er
 .It Bq Er EFAULT
 The
@@ -212,9 +214,10 @@ The
 .Fn ftok
 function originated with System V.
 .Sh HISTORY
-.Fn sigsend
-and
+.Fn sigsend ,
 .Fn sigsendset
+and
+.Fn setprocset
 first appeared in
 .Nx 10 .
 .Sh AUTHORS
