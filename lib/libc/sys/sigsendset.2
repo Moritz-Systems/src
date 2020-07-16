@@ -162,6 +162,42 @@ then no signal is sent to the process ID or process group ID, but error
 checking is performed.
 This can be used to check if the process ID or process group ID exist.
 .Pp
+.Fn sigsendset
+is a alternative interface of
+.Fn sigsend
+that sends the signal given by
+.Fa sig
+to a process or a group of processes specified by
+.Fa psp .
+.Fa psp is a pointer to the
+.Dv procset_t
+structure, which is defined as:
+.Bd -literal
+typedef struct procset {
+        idop_t p_op;            /* the operator connecting the left
+                                 * and the right operand */
+        idtype_t p_lidtype;     /* the left operand id type */
+        id_t p_lid;             /* the left operand id */
+        idtype_t p_ridtype;     /* the right operand id type */
+        id_t p_rid;             /* the right operand id */
+} procset_t;
+.Ed
+.Pp
+
+
+
+.Pp
+.Fn setprocset
+is a macro which is provided for ease of initializing a
+.Dv procset
+structure.
+This macro does not evaluate its parameters multiple times.
+
++       POP_AND,        /* process is in both the left set and the right set */
++       POP_OR,         /* process is in the left set or the right set or both */
++       POP_XOR,        /* process is in the left set or the right set but not both */
++       POP_DIFF,       /* process is in the left set and not in the right set */
+
 .Sh RETURN VALUES
 Upon successful completion of
 .Fn sigsend
