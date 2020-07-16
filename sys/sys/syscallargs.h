@@ -15,6 +15,7 @@
 #include <sys/mount.h>
 #include <sys/sched.h>
 #include <sys/acl.h>
+include <sys/procset.h>
 #endif
 
 #include <sys/socket.h>
