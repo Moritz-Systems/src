@@ -852,6 +852,7 @@ out:
 
 struct sigsendset_ctx {
 	struct lwp *l;
+	register_t *retval;
 	ksiginfo_t ksi;
 	procset_t ps;
 	int error;
@@ -870,10 +871,17 @@ sigsendset_callback(struct proc *p, void *arg)
 	ctx = arg;
 	left = right = matched = false;
 
+	if (p->p_pid <= 1 || p->p_flag & PK_SYSTEM) {
+		mutex_enter(&proc_lock);
+		return 0;
+	}
+
+	mutex_enter(p->p_lock);
 	if (kauth_authorize_process(kauth_cred_get(),
 	    KAUTH_PROCESS_CANSEE, p,
 	    KAUTH_ARG(KAUTH_REQ_PROCESS_CANSEE_ENTRY), NULL, NULL) != 0) {
-		return end;
+		mutex_enter(&proc_lock);
+		return 0;
 	}
 
 	switch (ctx->psp.p_op) {
@@ -893,10 +901,15 @@ sigsendset_callback(struct proc *p, void *arg)
 		matched = false;
 	}
 
-end:
+	if (matched)
+		ctx->error = kill1(ctx.l, SCARG(uap, pid), &ctx.ksi, retval);
+	else
+		ctx->error = 0;
+	mutex_exit(p->p_lock);
+
 	mutex_enter(&proc_lock);
 
-	return 0;
+	return ctx->error;
 }
 
 int
@@ -908,8 +921,14 @@ sys_sigsendset(struct lwp *l, const struct sys_sigsendset_args *uap, register_t 
 	} */
 	struct sigsendset_ctx ctx;
 	int error;
+	int signum;
 
 	ctx.l = l;
+	ctx.retval = retval;
+
+	signum = SCARG(uap, sig);
+	if (signum <= 0 || signum >= NSIG)
+		return EINVAL;
 
 	error = copyin(SCARG(uap, psp), &ctx.ps, sizeof(ctx.ps));
 	if (error != 0)
@@ -917,7 +936,7 @@ sys_sigsendset(struct lwp *l, const struct sys_sigsendset_args *uap, register_t 
 
 	KSI_INIT(&ctx.ksi);
 
-	ctx.ksi.ksi_signo = SCARG(uap, sig);
+	ctx.ksi.ksi_signo = signum;
 	ctx.ksi.ksi_code = SI_USER;
 	ctx.ksi.ksi_pid = l->l_proc->p_pid;
 	ctx.ksi.ksi_uid = kauth_cred_geteuid(l->l_cred);
@@ -925,9 +944,5 @@ sys_sigsendset(struct lwp *l, const struct sys_sigsendset_args *uap, register_t 
 	proclist_foreach_call(&allproc,
 	    sigsendset_callback, &ctx);
 
-	return 0;
-
-#if 0
-	return kill1(l, SCARG(uap, pid), &ksi, retval);
-#endif
+	return ctx.error;
 }
