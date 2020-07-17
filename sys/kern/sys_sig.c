@@ -902,7 +902,7 @@ sigsendset_callback(struct proc *p, void *arg)
 	}
 
 	if (matched)
-		ctx->error = kill1(ctx.l, SCARG(uap, pid), &ctx.ksi, retval);
+		ctx->error = kpsignal2(p, &ctx.ksi);
 	else
 		ctx->error = 0;
 	mutex_exit(p->p_lock);
