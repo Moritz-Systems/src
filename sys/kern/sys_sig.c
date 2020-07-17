@@ -851,6 +851,7 @@ out:
 }
 
 struct sigsendset_ctx {
+	struct lwp *l;
 	ksiginfo_t ksi;
 	procset_t ps;
 	int error;
@@ -859,12 +860,43 @@ struct sigsendset_ctx {
 static int
 sigsendset_callback(struct proc *p, void *arg)
 {
-	struct sigsendset_ctx *ctx = arg;
+	struct sigsendset_ctx *ctx;
+	bool left, right, matched;
+
+	KASSERT(mutex_owned(&proc_lock));
+
+	mutex_exit(&proc_lock);
+
+	ctx = arg;
+	left = right = matched = false;
 
 	if (kauth_authorize_process(kauth_cred_get(),
 	    KAUTH_PROCESS_CANSEE, p,
-	    KAUTH_ARG(KAUTH_REQ_PROCESS_CANSEE_ENTRY), NULL, NULL) != 0)
-		return 0;
+	    KAUTH_ARG(KAUTH_REQ_PROCESS_CANSEE_ENTRY), NULL, NULL) != 0) {
+		return end;
+	}
+
+	switch (ctx->psp.p_op) {
+	case POP_AND:
+		matched = left && right;
+		break;
+	case POP_OR:
+		matched = left || right;
+		break;
+	case POP_XOR:
+		matched = (left && !right) || (!left && right);
+		break;
+	case POP_DIFF:
+		matched = left && !right;
+		break;
+	default:
+		matched = false;
+	}
+
+end:
+	mutex_enter(&proc_lock);
+
+	return 0;
 }
 
 int
@@ -876,6 +908,8 @@ sys_sigsendset(struct lwp *l, const struct sys_sigsendset_args *uap, register_t 
 	} */
 	struct sigsendset_ctx ctx;
 	int error;
+
+	ctx.l = l;
 
 	error = copyin(SCARG(uap, psp), &ctx.ps, sizeof(ctx.ps));
 	if (error != 0)
@@ -891,7 +925,7 @@ sys_sigsendset(struct lwp *l, const struct sys_sigsendset_args *uap, register_t 
 	proclist_foreach_call(&allproc,
 	    sigsendset_callback, &ctx);
 
-	return ctx.error;
+	return 0;
 
 #if 0
 	return kill1(l, SCARG(uap, pid), &ksi, retval);
