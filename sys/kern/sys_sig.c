@@ -852,10 +852,10 @@ out:
 
 struct sigsendset_ctx {
 	struct lwp *l;
-	register_t *retval;
 	ksiginfo_t ksi;
 	procset_t ps;
 	int error;
+	bool found;
 };
 
 static int
@@ -882,6 +882,9 @@ sigsendset_callback(struct proc *p, void *arg)
 	    KAUTH_ARG(KAUTH_REQ_PROCESS_CANSEE_ENTRY), NULL, NULL) != 0) {
 		mutex_enter(&proc_lock);
 		return 0;
+	}
+
+	switch (ctx->psp.p_lidtype) {
 	}
 
 	switch (ctx->psp.p_op) {
@@ -924,7 +927,7 @@ sys_sigsendset(struct lwp *l, const struct sys_sigsendset_args *uap, register_t 
 	int signum;
 
 	ctx.l = l;
-	ctx.retval = retval;
+	ctx.found = false;
 
 	signum = SCARG(uap, sig);
 	if (signum <= 0 || signum >= NSIG)
@@ -943,6 +946,9 @@ sys_sigsendset(struct lwp *l, const struct sys_sigsendset_args *uap, register_t 
 
 	proclist_foreach_call(&allproc,
 	    sigsendset_callback, &ctx);
+
+	if (!ctx.found)
+		return ESRCH;
 
 	return ctx.error;
 }
