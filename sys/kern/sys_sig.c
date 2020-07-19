@@ -859,17 +859,70 @@ struct sigsendset_ctx {
 };
 
 static int
+matchid(struct proc *p, idtype_t idtype, id_t id)
+{
+
+	KASSERT(mutex_owned(p->p_lock));
+
+	if (p->p_pid == 1 && idtype != P_PID)
+		return 0;
+
+	switch (idtype) {
+	case P_ALL:
+		return 1;
+	case P_PID:
+		if (id == P_MYID)
+			return p == curproc;
+		else
+			return p->p_pid == (pid_t)id;
+	case P_LWPID:
+		return 0; /* XXX */
+	case P_PPID:
+		if (id == P_MYID)
+			return p->p_opptr == curproc;
+		else
+			return p->p_oppid == (pid_t)id;
+	case P_PGID:
+		if (id == P_MYID)
+			return p->p_pgid == curproc->p_pgid;
+		else
+			return p->p_pgid == (pid_t)id;
+	case P_SID:
+		if (id == P_MYID)
+			return p->p_session == curproc->p_session;
+		else
+			return p->p_session == (pid_t)id;
+	case P_CID:
+		return 0; /* XXX */
+	case P_UID:
+		if (id == P_MYID)
+			return kauth_cred_geteuid(p->p_cred) == kauth_cred_geteuid(curproc->p_cred);
+		else
+			return kauth_cred_geteuid(p->p_cred) == (uid_t)id;
+	case P_GID:
+		if (id == P_MYID)
+			return kauth_cred_getegid(p->p_cred) == kauth_cred_getegid(curproc->p_cred);
+		else
+			return kauth_cred_getegid(p->p_cred) == (pid_t)id;
+
+	}
+
+	return 0;
+}
+
+static int
 sigsendset_callback(struct proc *p, void *arg)
 {
 	struct sigsendset_ctx *ctx;
-	bool left, right, matched;
+	int left, right;
+	bool matched;
 
 	KASSERT(mutex_owned(&proc_lock));
 
 	mutex_exit(&proc_lock);
 
 	ctx = arg;
-	left = right = matched = false;
+//	left = right = matched = false;
 
 	if (p->p_pid <= 1 || p->p_flag & PK_SYSTEM) {
 		mutex_enter(&proc_lock);
@@ -880,14 +933,21 @@ sigsendset_callback(struct proc *p, void *arg)
 	if (kauth_authorize_process(kauth_cred_get(),
 	    KAUTH_PROCESS_CANSEE, p,
 	    KAUTH_ARG(KAUTH_REQ_PROCESS_CANSEE_ENTRY), NULL, NULL) != 0) {
+		mutex_exit(p->p_lock);
 		mutex_enter(&proc_lock);
 		return 0;
 	}
 
-	switch (ctx->psp.p_lidtype) {
+	left = matchid(p, ctx->ps.p_lidtype, ctx->ps.p_lid);
+	right = matchid(p, ctx->ps.p_ridtype, ctx->ps.p_rid);
+
+	if (left == -1 || right == -1) {
+		mutex_exit(p->p_lock);
+		mutex_enter(&proc_lock);
+		return EINVAL;
 	}
 
-	switch (ctx->psp.p_op) {
+	switch (ctx->ps.p_op) {
 	case POP_AND:
 		matched = left && right;
 		break;
@@ -905,7 +965,7 @@ sigsendset_callback(struct proc *p, void *arg)
 	}
 
 	if (matched)
-		ctx->error = kpsignal2(p, &ctx.ksi);
+		ctx->error = kpsignal2(p, &ctx->ksi);
 	else
 		ctx->error = 0;
 	mutex_exit(p->p_lock);
