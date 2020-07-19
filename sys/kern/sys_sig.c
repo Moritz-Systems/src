@@ -959,6 +959,7 @@ sigsendset_callback(struct proc *p, void *arg)
 	if (left == -1 || right == -1) {
 		mutex_exit(p->p_lock);
 		mutex_enter(&proc_lock);
+		ctx->error = EINVAL
 		return EINVAL;
 	}
 
