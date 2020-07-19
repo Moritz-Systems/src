@@ -918,7 +918,7 @@ matchid(struct proc *p, idtype_t idtype, id_t id)
 		/* XXX: Unimplemented. */
 		return 0;
 	default:
-		/* Inrecognized idtype. */
+		/* Unrecognized idtype. */
 		return -1;
 	}
 
