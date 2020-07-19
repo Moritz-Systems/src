@@ -873,13 +873,17 @@ matchid(struct proc *p, idtype_t idtype, id_t id)
 	case P_PID:
 		if (id == P_MYID)
 			return p == curproc;
+		else if (id == 0)
+			return p->p_pgid == curproc->p_pgid;
 		else
 			return p->p_pid == (pid_t)id;
 	case P_LWPID:
-		return 0; /* XXX */
+		return 0; /* XXX: Unimplemented. */
 	case P_PPID:
 		if (id == P_MYID)
 			return p->p_opptr == curproc;
+		else if (id == 0)
+			return p->p_pgid == curproc->p_pgid;
 		else
 			return p->p_oppid == (pid_t)id;
 	case P_PGID:
@@ -893,7 +897,7 @@ matchid(struct proc *p, idtype_t idtype, id_t id)
 		else
 			return p->p_session == (pid_t)id;
 	case P_CID:
-		return 0; /* XXX */
+		return 0; /* XXX: Unimplemented. */
 	case P_UID:
 		if (id == P_MYID)
 			return kauth_cred_geteuid(p->p_cred) == kauth_cred_geteuid(curproc->p_cred);
@@ -904,7 +908,18 @@ matchid(struct proc *p, idtype_t idtype, id_t id)
 			return kauth_cred_getegid(p->p_cred) == kauth_cred_getegid(curproc->p_cred);
 		else
 			return kauth_cred_getegid(p->p_cred) == (pid_t)id;
-
+	case P_TASKID:
+	case P_PROJID:
+	case P_POOLID;
+	case P_ZONEID;
+	case P_CTID;
+	case P_CPUID;
+	case P_PSETID:
+		/* XXX: Unimplemented. */
+		return 0;
+	default:
+		/* Inrecognized idtype. */
+		return -1;
 	}
 
 	return 0;
