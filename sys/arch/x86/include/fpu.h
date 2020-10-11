@@ -24,6 +24,9 @@ void fpu_set_default_cw(struct lwp *, unsigned int);
 void fputrap(struct trapframe *);
 void fpudna(struct trapframe *);
 
+void process_xmm_to_s87(const struct fxsave *, struct save87 *);
+void process_s87_to_xmm(const struct save87 *, struct fxsave *);
+
 void fpu_clear(struct lwp *, unsigned int);
 void fpu_sigreset(struct lwp *);
 
