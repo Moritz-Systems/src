@@ -69,9 +69,9 @@ file	arch/i386/i386/machdep.c
 file 	arch/i386/i386/longrun.c
 file	arch/i386/i386/mtrr_k6.c	mtrr
 file	arch/i386/i386/process_machdep.c
-file	arch/x86/x86/convert_xmm_s87.c
 file	arch/i386/i386/trap.c
 file	dev/cons.c
+file	arch/x86/x86/convert_xmm_s87.c
 file	arch/x86/x86/fpu.c
 file	arch/x86/x86/dbregs.c
 file	arch/x86/x86/spectre.c
