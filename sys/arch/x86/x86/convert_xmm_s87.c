@@ -34,7 +34,6 @@ __KERNEL_RCSID(0, "$NetBSD: convert_xmm_s87.c,v 1.3 2014/02/15 22:20:42 dsl Exp 
 
 
 #include <sys/param.h>
-#include <sys/systm.h>
 #include <x86/fpu.h>
 
 void
