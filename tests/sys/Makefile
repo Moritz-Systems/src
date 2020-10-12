@@ -10,5 +10,8 @@ TESTS_SUBDIRS+=	netatalk
 TESTS_SUBDIRS+=	netinet
 TESTS_SUBDIRS+=	netinet6
 TESTS_SUBDIRS+=	rc
+.if ${MACHINE} == amd64 || ${MACHINE} == i386
+TESTS_SUBDIRS+=	x86
+.endif
 
 .include <bsd.test.mk>

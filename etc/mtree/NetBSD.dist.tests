@@ -171,6 +171,7 @@
 ./usr/libdata/debug/usr/tests/sys/netatalk
 ./usr/libdata/debug/usr/tests/sys/netinet
 ./usr/libdata/debug/usr/tests/sys/netinet6
+./usr/libdata/debug/usr/tests/sys/x86
 ./usr/libdata/debug/usr/tests/usr.bin
 ./usr/libdata/debug/usr/tests/usr.bin/cpio
 ./usr/libdata/debug/usr/tests/usr.bin/id
@@ -402,6 +403,7 @@
 ./usr/tests/sys/netinet
 ./usr/tests/sys/netinet6
 ./usr/tests/sys/rc
+./usr/tests/sys/x86
 ./usr/tests/usr.bin
 ./usr/tests/usr.bin/awk
 ./usr/tests/usr.bin/basename
